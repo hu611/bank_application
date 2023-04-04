@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for Auth" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
+        </processorPath>
+        <module name="Auth_Model" />
+        <module name="Auth_Api" />
+        <module name="MyBatisGenerator" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Auth" target="1.8" />
+      <module name="Auth (1)" target="1.8" />
+      <module name="Auth_Api" target="1.8" />
+      <module name="Auth_Model" target="1.8" />
+      <module name="Bank_Pojo" target="1.5" />
+      <module name="empty_module" target="1.8" />
+      <module name="MyBatisGenerator" target="1.8" />
+      <module name="package_parent" target="1.8" />
+      <module name="test_module" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Auth" options="" />
+      <module name="Auth_Api" options="" />
+      <module name="Auth_Model" options="" />
+      <module name="MyBatisGenerator" options="" />
+      <module name="empty_module" options="" />
+      <module name="package_parent" options="" />
+      <module name="test_module" options="" />
+    </option>
+  </component>
+</project>

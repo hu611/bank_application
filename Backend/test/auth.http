@@ -1,0 +1,2 @@
+###get authentication
+POST localhost:63010/auth/login?username=user&password=password

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Auth/Auth.iml" filepath="$PROJECT_DIR$/Auth/Auth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Auth/Auth_Api/Auth_Api.iml" filepath="$PROJECT_DIR$/Auth/Auth_Api/Auth_Api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" filepath="$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Backend.iml" filepath="$PROJECT_DIR$/Backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" filepath="$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/package_parent/package_parent.iml" filepath="$PROJECT_DIR$/package_parent/package_parent.iml" />
+    </modules>
+  </component>
+</project>
