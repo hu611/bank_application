@@ -1,0 +1,4 @@
+server:
+  servlet:
+    context-path: /storage
+  port: 63020

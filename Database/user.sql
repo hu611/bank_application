@@ -1,18 +1,16 @@
 drop table if exists bank_user;
 
 create table bank_user (
-  id int AUTO_INCREMENT,
   prc_id varchar(18) not null,
   username varchar(18) not null,
   realname varchar(18) not null,
   salt  varchar(4) not null,
   gender bit not null,
-  cell_phone  varchar(12),
   create_date date,
   last_update date,
   birthday  date,
   user_pic  varchar(255),
-  primary key(id)
+  primary key(prc_id)
 );
 
 INSERT INTO bank_user (prc_id, username, realname, salt, gender, cell_phone, create_date, last_update, birthday, user_pic)

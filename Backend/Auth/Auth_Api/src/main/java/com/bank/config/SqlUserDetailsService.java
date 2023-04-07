@@ -7,11 +7,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 
 @Service
 public class SqlUserDetailsService implements UserDetailsService {
@@ -21,6 +19,7 @@ public class SqlUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         HashMap<String, Object> map = new HashMap<>();
         map.put("username",username);
+
         BankUser bankUser = bankUserMapper.selectByUserName(username);
         if(bankUser == null) {
             System.out.println("user name not found");

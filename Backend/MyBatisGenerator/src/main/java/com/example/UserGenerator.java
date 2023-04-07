@@ -1,12 +1,12 @@
 package com.example;
 
-//import com.baomidou.mybatisplus.generator.FastAutoGenerator;
-//import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.FastAutoGenerator;
+import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import java.util.Arrays;
 import java.util.Collections;
-/*
+
 public class UserGenerator {
     public static void main(String[] args) {
         FastAutoGenerator.create("jdbc:mysql://localhost:3306/bank_application", "root", "youpassword")
@@ -23,5 +23,5 @@ public class UserGenerator {
     }
 
 }
-*/
+
 

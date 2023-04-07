@@ -20,14 +20,15 @@
     <name>Auth</name>
     <description>Auth</description>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.base</groupId>
+            <artifactId>package_base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
+
     </build>
 
 </project>

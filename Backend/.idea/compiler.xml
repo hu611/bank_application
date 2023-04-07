@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for Auth" enabled="true">
+      <profile name="Annotation profile for Storage_Service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -10,7 +10,9 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
         </processorPath>
         <module name="Auth_Model" />
+        <module name="package_base" />
         <module name="Auth_Api" />
+        <module name="Storage_Service" />
         <module name="MyBatisGenerator" />
       </profile>
     </annotationProcessing>
@@ -22,7 +24,9 @@
       <module name="Bank_Pojo" target="1.5" />
       <module name="empty_module" target="1.8" />
       <module name="MyBatisGenerator" target="1.8" />
+      <module name="package_base" target="1.8" />
       <module name="package_parent" target="1.8" />
+      <module name="Storage_Service" target="1.8" />
       <module name="test_module" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -32,7 +36,9 @@
       <module name="Auth_Api" options="" />
       <module name="Auth_Model" options="" />
       <module name="MyBatisGenerator" options="" />
+      <module name="Storage_Service" options="" />
       <module name="empty_module" options="" />
+      <module name="package_base" options="" />
       <module name="package_parent" options="" />
       <module name="test_module" options="" />
     </option>

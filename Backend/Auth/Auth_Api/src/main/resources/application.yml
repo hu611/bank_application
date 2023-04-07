@@ -10,3 +10,5 @@ server:
   servlet:
     context-path: /auth
   port: 63010 # 网关端口
+logging:
+  config: classpath:log4j2-dev.xml

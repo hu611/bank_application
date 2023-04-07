@@ -5,6 +5,8 @@ package com.bank.pojo;
 //import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDate;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.ToString;
 
@@ -18,13 +20,10 @@ import lombok.ToString;
  */
 @Data
 @ToString
-//@TableName("bank_user")
+@TableName("bank_user")
 public class BankUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    //@TableId
-    private Integer id;
 
     private String prcId;
 
@@ -35,8 +34,6 @@ public class BankUser implements Serializable {
     private String salt;
 
     private Boolean gender;
-
-    private String cellPhone;
 
     private LocalDate createDate;
 

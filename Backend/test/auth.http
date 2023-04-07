@@ -1,2 +1,30 @@
 ###get authentication
-POST localhost:63010/auth/login?username=user&password=password
+POST localhost:63010/auth/login?username=ad23&password=123
+
+###post oauth2 authentication
+POST localhost:63010/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username=ad23&password=123
+
+###get mapping that needs authentication
+GET  localhost:63020/auth/test1
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODA3NzMwNjcsInVzZXJfbmFtZSI6ImFkMjMiLCJhdXRob3JpdGllcyI6WyJwMSJdLCJqdGkiOiI4MTI0ZTE5OC1jZWQ2LTRhMGQtODdhOS0wMGNmODRiMjhmMmEiLCJjbGllbnRfaWQiOiJYY1dlYkFwcCIsInNjb3BlIjpbImFsbCJdfQ.7jtGfumLTqz3N4yWGmVFiuMnTriqJnHEBjLiiLHLRfM
+
+### check token
+POST  localhost:63010/auth/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODA3MDE4NzcsInVzZXJfbmFtZSI6ImFkMjMiLCJhdXRob3JpdGllcyI6WyJwMSJdLCJqdGkiOiIxN2ZlMTI3My02ZWJiLTRhMjUtYjY1OS01NzhmNjljM2IxODYiLCJjbGllbnRfaWQiOiJYY1dlYkFwcCIsInNjb3BlIjpbImFsbCJdfQ.pAzCA03fKENf2JXizxVWc_-iN5rKdCVus0vYX2tHBNU
+
+### check token 2
+POST  localhost:63020/auth/oauth/check_token
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODA3MDI0NTQsInVzZXJfbmFtZSI6ImFkMjMiLCJhdXRob3JpdGllcyI6WyJwMSJdLCJqdGkiOiJmNzViNDFkYS00MDBlLTRiNzUtYTQ1YS04OTI1YTU4ZjM1ODEiLCJjbGllbnRfaWQiOiJYY1dlYkFwcCIsInNjb3BlIjpbImFsbCJdfQ.g-gyo6XUdxfXJ15OkrGiT8eQOVHyjMfUDp9Wv4Cd1PU
+
+### register users
+POST localhost:63010/auth/register
+Content-Type: application/json
+
+{
+  "prcId": "320202020202",
+  "username": "hku",
+  "realname": "hku",
+  "gender": "true",
+  "cellPhone": "1333333333",
+  "password": "12345",
+  "email": "22222@qq.com"
+}
