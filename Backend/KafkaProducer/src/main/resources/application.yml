@@ -1,0 +1,6 @@
+server:
+  servlet:
+    context-path: /producer
+  port: 63030
+logging:
+  config: classpath:log4j2-dev.xml

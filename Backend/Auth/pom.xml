@@ -11,7 +11,7 @@
         <groupId>com.example</groupId>
         <artifactId>package_parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../package_parent</relativePath> <!-- lookup parent from repository -->
+        <relativePath>../PackageParent</relativePath> <!-- lookup parent from repository -->
     </parent>
     <packaging>pom</packaging>
     <groupId>com.bank</groupId>

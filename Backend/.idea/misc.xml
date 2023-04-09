@@ -9,6 +9,9 @@
         <option value="$PROJECT_DIR$/Bank_Pojo/pom.xml" />
         <option value="$PROJECT_DIR$/Storage_Service/pom.xml" />
         <option value="$PROJECT_DIR$/package_base/pom.xml" />
+        <option value="$PROJECT_DIR$/KafkaProducer/pom.xml" />
+        <option value="$PROJECT_DIR$/PackageBase/pom.xml" />
+        <option value="$PROJECT_DIR$/PackageParent/pom.xml" />
       </list>
     </option>
   </component>

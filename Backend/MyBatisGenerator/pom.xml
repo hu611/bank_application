@@ -6,7 +6,7 @@
         <groupId>com.example</groupId>
         <version>0.0.1-SNAPSHOT</version>
         <artifactId>package_parent</artifactId>
-        <relativePath>../package_parent</relativePath>
+        <relativePath>../PackageParent</relativePath>
         <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>

@@ -6,10 +6,13 @@
       <module fileurl="file://$PROJECT_DIR$/Auth/Auth_Api/Auth_Api.iml" filepath="$PROJECT_DIR$/Auth/Auth_Api/Auth_Api.iml" />
       <module fileurl="file://$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" filepath="$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" />
       <module fileurl="file://$PROJECT_DIR$/Backend.iml" filepath="$PROJECT_DIR$/Backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KafkaProducer/KafkaProducer.iml" filepath="$PROJECT_DIR$/KafkaProducer/KafkaProducer.iml" />
       <module fileurl="file://$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" filepath="$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/package_base/PackageBase.iml" filepath="$PROJECT_DIR$/package_base/PackageBase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/package_parent/PackageParent.iml" filepath="$PROJECT_DIR$/package_parent/PackageParent.iml" />
       <module fileurl="file://$PROJECT_DIR$/Storage_Service/Storage_Service.iml" filepath="$PROJECT_DIR$/Storage_Service/Storage_Service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/package_base/package_base.iml" filepath="$PROJECT_DIR$/package_base/package_base.iml" />
-      <module fileurl="file://$PROJECT_DIR$/package_parent/package_parent.iml" filepath="$PROJECT_DIR$/package_parent/package_parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PackageBase/package_base.iml" filepath="$PROJECT_DIR$/PackageBase/package_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PackageParent/package_parent.iml" filepath="$PROJECT_DIR$/PackageParent/package_parent.iml" />
     </modules>
   </component>
 </project>

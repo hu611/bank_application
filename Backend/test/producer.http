@@ -1,0 +1,10 @@
+###post producer message
+POST {{producer}}/producer/sendmsg
+Content-Type: application/json
+
+{
+  "topic": "transaction",
+  "key": "whatever",
+  "partition": 0,
+  "value": "hello from http request"
+}

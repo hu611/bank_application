@@ -1,5 +1,5 @@
 ###get authentication
-POST localhost:63010/auth/login?username=ad23&password=123
+POST {{auth_host}}/auth/login?username=ad23&password=123
 
 ###post oauth2 authentication
 POST localhost:63010/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username=ad23&password=123
@@ -28,3 +28,6 @@ Content-Type: application/json
   "password": "12345",
   "email": "22222@qq.com"
 }
+
+
+

@@ -9,7 +9,9 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
         </processorPath>
+        <module name="KafkaProducer" />
         <module name="Auth_Model" />
+        <module name="PackageBase" />
         <module name="package_base" />
         <module name="Auth_Api" />
         <module name="Storage_Service" />
@@ -23,9 +25,12 @@
       <module name="Auth_Model" target="1.8" />
       <module name="Bank_Pojo" target="1.5" />
       <module name="empty_module" target="1.8" />
+      <module name="KafkaProducer" target="1.8" />
       <module name="MyBatisGenerator" target="1.8" />
       <module name="package_base" target="1.8" />
       <module name="package_parent" target="1.8" />
+      <module name="PackageBase" target="1.8" />
+      <module name="PackageParent" target="1.8" />
       <module name="Storage_Service" target="1.8" />
       <module name="test_module" target="1.8" />
     </bytecodeTargetLevel>
@@ -35,11 +40,12 @@
       <module name="Auth" options="" />
       <module name="Auth_Api" options="" />
       <module name="Auth_Model" options="" />
+      <module name="KafkaProducer" options="" />
       <module name="MyBatisGenerator" options="" />
+      <module name="PackageBase" options="" />
+      <module name="PackageParent" options="" />
       <module name="Storage_Service" options="" />
       <module name="empty_module" options="" />
-      <module name="package_base" options="" />
-      <module name="package_parent" options="" />
       <module name="test_module" options="" />
     </option>
   </component>
