@@ -17,9 +17,6 @@ public class SqlUserDetailsService implements UserDetailsService {
     BankUserMapper bankUserMapper;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("username",username);
-
         BankUser bankUser = bankUserMapper.selectByUserName(username);
         if(bankUser == null) {
             System.out.println("user name not found");
@@ -30,7 +27,7 @@ public class SqlUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails _bankUserToUserDetails(BankUser bankUser) {
-        return User.withUsername(bankUser.getUsername())
+        return User.withUsername(bankUser.getUsername() + " " + bankUser.getPrcId())
                 .password(bankUser.getPassword()).authorities("p1").build();
     }
 }

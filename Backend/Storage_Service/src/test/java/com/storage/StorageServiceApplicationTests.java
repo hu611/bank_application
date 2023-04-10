@@ -1,5 +1,7 @@
 package com.storage;
 
+import com.base.util.EmailUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.service.DecryptService;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -59,9 +61,19 @@ class StorageServiceApplicationTests {
     @Test
     public void test_aes_decryption() {
         try {
-            String decrypted = decryptService.aes_decrypt(
+            JsonNode jsonNode = decryptService.aes_decrypt(
                     "dB1j+wlWlbpm2JApjkhBUptuuBuLAOFnmhXf9zAMTG9Je6n1Y9OkwIsKlg5gRyX1");
-            System.out.println(decrypted);
+            System.out.println(jsonNode.get("account"));
+            System.out.println(jsonNode.get("amount"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_email_send() {
+        try {
+            EmailUtils._send_email("AustinHu0802@gmail.com", "Hello from Java", "llll");
         } catch (Exception e) {
             e.printStackTrace();
         }

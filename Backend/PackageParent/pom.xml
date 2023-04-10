@@ -8,6 +8,10 @@
     <name>package_parent</name>
     <description>xuecheng-plus-parent</description>
     <packaging>pom</packaging>
+    <modules>
+        <module>../Auth</module>
+        <module>../PackageBase</module>
+    </modules>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,6 +35,7 @@
         <okhttp.version>4.8.1</okhttp.version>
         <swagger-spring-boot-starter.version>1.9.0.RELEASE</swagger-spring-boot-starter.version>
         <elasticsearch.version>7.12.1</elasticsearch.version>
+        <mail-api.version>1.6.2</mail-api.version>
     </properties>
 
 
@@ -112,6 +117,12 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus-boot-starter.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>${mail-api.version}</version>
+            </dependency>
+
 
             <!-- mybatis plus 代码生成器 -->
             <dependency>

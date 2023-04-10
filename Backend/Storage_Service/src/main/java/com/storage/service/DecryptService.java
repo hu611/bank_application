@@ -1,6 +1,8 @@
 package com.storage.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public interface DecryptService {
 
-    public String aes_decrypt(String msg) throws Exception;
+    public JsonNode aes_decrypt(String msg) throws Exception;
 }

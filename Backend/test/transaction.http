@@ -1,0 +1,11 @@
+###test transaction service without jwt token(SHOULD NOT WORK)
+POST {{transaction_host}}/storage/transaction/deposit?encrypted_transaction=123
+
+###test transaction service with jwt token
+POST {{transaction_host}}/storage/transaction/deposit
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMzE2MzIsInVzZXJfbmFtZSI6ImFkMjMgMzIwMjAyMDIwMjAyIiwiYXV0aG9yaXRpZXMiOlsicDEiXSwianRpIjoiNWFmMjE2ODctYjRkZi00YTNlLWFhNzMtMzY5YzQ0YWQ5MzlhIiwiY2xpZW50X2lkIjoiWGNXZWJBcHAiLCJzY29wZSI6WyJhbGwiXX0.iz8VkCBpMn4R2lXbQu62MGXU-ex9ctSd47Cs0cjKtQM
+content-type:Application/json
+
+{
+  "transaction":"dB1j+wlWlbpm2JApjkhBUptuuBuLAOFnmhXf9zAMTG9Je6n1Y9OkwIsKlg5gRyX1"
+}
