@@ -9,3 +9,7 @@ content-type:Application/json
 {
   "transaction":"dB1j+wlWlbpm2JApjkhBUptuuBuLAOFnmhXf9zAMTG9Je6n1Y9OkwIsKlg5gRyX1"
 }
+
+###test email generation
+POST {{transaction_host}}/storage/transaction/generateEmail
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEyMTcxNjIsInVzZXJfbmFtZSI6ImFkMjMgMzIwMjAyMDIwMjAyIiwiYXV0aG9yaXRpZXMiOlsicDEiXSwianRpIjoiYzc0ZGNjYTgtNGNlYS00ZThjLWI0NTItMTJlMTcyOTVlNjI2IiwiY2xpZW50X2lkIjoiWGNXZWJBcHAiLCJzY29wZSI6WyJhbGwiXX0.MiB3toMg6lPodxzbb4I-2C3NdkNC-gja7LmCio5p-Zc

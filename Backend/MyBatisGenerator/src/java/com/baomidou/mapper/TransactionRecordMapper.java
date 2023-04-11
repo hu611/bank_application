@@ -1,6 +1,6 @@
 package com.baomidou.mapper;
 
-import com.baomidou.entity.BankDeposit;
+import com.baomidou.entity.TransactionRecord;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,9 +10,9 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author weiyanhu
- * @since 2023-04-09
+ * @since 2023-04-11
  */
 @Mapper
-public interface BankDepositMapper extends BaseMapper<BankDeposit> {
+public interface TransactionRecordMapper extends BaseMapper<TransactionRecord> {
 
 }
