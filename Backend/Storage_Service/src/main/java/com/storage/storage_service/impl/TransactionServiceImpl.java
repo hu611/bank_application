@@ -118,6 +118,10 @@ public class TransactionServiceImpl implements TransactionService {
         if(userNotification == null || userNotification.getEmail() == null) {
             throw new RuntimeException("User does not have Email");
         }
+
+        System.out.println(_get_redis_confirm_code_key(prcId) + "set for redis value");
+        redisTemplate.opsForValue().set(_get_redis_confirm_code_key(prcId), random_code,3, TimeUnit.MINUTES);
+
         //create a new thread for sending email
         Thread emailthread = new Thread(new Runnable() {
             @Override
@@ -131,8 +135,10 @@ public class TransactionServiceImpl implements TransactionService {
             }
         });
         emailthread.start();
+    }
 
-        redisTemplate.opsForValue().set(prcId, random_code,3, TimeUnit.MINUTES);
+    public String _get_redis_confirm_code_key(String prcId) {
+        return prcId + "_confirm_code";
     }
 
     static String _generate_random_num(int length) {
@@ -144,5 +150,17 @@ public class TransactionServiceImpl implements TransactionService {
             stringBuilder.append(characters.charAt(index));
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void check_code(String username, String confirmCode) throws Exception{
+        String code = (String) redisTemplate.opsForValue().get(_get_redis_confirm_code_key(username));
+        if(code == null || confirmCode == null) {
+            throw new RuntimeException("Code is null or confirm code is null");
+        }
+        if(!code.equals(confirmCode)) {
+            throw new RuntimeException("The message is not equal");
+        }
+        redisTemplate.delete(_get_redis_confirm_code_key(username));
     }
 }

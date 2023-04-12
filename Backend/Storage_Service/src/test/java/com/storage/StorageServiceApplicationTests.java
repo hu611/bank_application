@@ -62,9 +62,9 @@ class StorageServiceApplicationTests {
     public void test_aes_decryption() {
         try {
             JsonNode jsonNode = decryptService.aes_decrypt(
-                    "dB1j+wlWlbpm2JApjkhBUptuuBuLAOFnmhXf9zAMTG9Je6n1Y9OkwIsKlg5gRyX1");
+                    "+9MAKhQ75eno1GkLxf8K7u+3R9V+8j8RNZ2UeZM82GbBRuEeA0OiN5DompKZWUlXaYoexujNoERyyOCb7af0vg==");
             System.out.println(jsonNode.get("account"));
-            System.out.println(jsonNode.get("amount"));
+            System.out.println(jsonNode.get("confirmCode"));
         } catch (Exception e) {
             e.printStackTrace();
         }

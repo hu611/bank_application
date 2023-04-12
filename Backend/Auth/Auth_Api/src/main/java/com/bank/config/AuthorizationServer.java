@@ -31,6 +31,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    String resource_id = "bank_application";
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -46,6 +47,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         clients.inMemory()// 使用in-memory存储
                 .withClient("XcWebApp")// client_id
                 .secret(passwordEncoder.encode("XcWebApp"))
+                .resourceIds(resource_id)
                 .authorizedGrantTypes("authorization_code", "password","client_credentials","implicit","refresh_token")// 该client允许的授权类型authorization_code,password,refresh_token,implicit,client_credentials
                 .scopes("all")// 允许的授权范围
                 .autoApprove(true);//false跳转到授权页

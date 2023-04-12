@@ -2,6 +2,7 @@ package com.storage.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -14,15 +15,15 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    //资源服务标识
-    public static final String RESOURCE_ID = "xuecheng-plus";
 
+    String resource_id = "bank_application";
     @Autowired
     TokenStore tokenStore;
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
-        resources.resourceId(RESOURCE_ID)//资源 id
+        resources
+                .resourceId(resource_id)//资源 id
                 .tokenStore(tokenStore)
                 .stateless(true);
     }
@@ -31,8 +32,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/transaction/*").authenticated()//所有/r/**的请求必须认证通过
-                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .anyRequest().authenticated();
         ;
     }
 
