@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.storage.pojo.CardInfo;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Map;
+
 /**
  * <p>
  *  Mapper 接口
@@ -15,5 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CardInfoMapper extends BaseMapper<CardInfo> {
-
+    public int count_card_no_by_prcId(Map<String, Object> map);
 }

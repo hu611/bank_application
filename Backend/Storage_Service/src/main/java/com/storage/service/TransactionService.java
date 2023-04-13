@@ -1,4 +1,4 @@
-package com.storage.storage_service;
+package com.storage.service;
 
 import java.math.BigDecimal;
 

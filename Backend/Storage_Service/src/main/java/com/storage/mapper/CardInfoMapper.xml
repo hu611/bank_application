@@ -17,4 +17,8 @@
         card_no, prc_id, opening_date, balance, card_type, pin_num
     </sql>
 
+    <select id="count_card_no_by_prcId" resultType="Integer" parameterType="Map">
+        select count(*) from card_info where prc_id = #{prcId} and card_type = #{card_type}
+    </select>
+
 </mapper>

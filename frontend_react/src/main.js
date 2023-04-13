@@ -7,6 +7,8 @@ function Main () {
     <ul className="main_list">
       <li>
         <a href="/transfer"> 转账</a>
+        <br></br>
+        <a href="/openAccount"> 开户</a>
       </li>
     </ul>
   </div>)

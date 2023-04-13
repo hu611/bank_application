@@ -2,15 +2,20 @@ package com.storage;
 
 import com.base.util.EmailUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.storage.mapper.CardInfoMapper;
 import com.storage.mapper.UserNotificationMapper;
 import com.storage.pojo.UserNotification;
+import com.storage.service.AccountService;
 import com.storage.service.DecryptService;
-import com.storage.storage_service.TransactionService;
+import com.storage.service.TransactionService;
+import com.storage.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest
 public class DepositTest {
@@ -23,6 +28,12 @@ public class DepositTest {
 
     @Autowired
     DecryptService decryptService;
+
+    @Autowired
+    CardInfoMapper cardInfoMapper;
+
+    @Autowired
+    AccountServiceImpl accountService;
     @Test
     public void test_deposit() {
         try {
@@ -70,6 +81,31 @@ public class DepositTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void test_count_by_prc_id() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("prcId","12344");
+        map.put("card_type","0");
+        int count = cardInfoMapper.count_card_no_by_prcId(map);
+        System.out.println(count);
+    }
+
+    @Test
+    public void test_format_str() {
+        String new_url = "http://localhost:1111";
+        String username = "hu611";
+        String confirmcode = "ada";
+        new_url = new_url + String.format("?username=%s&confirmcode=%s",username,confirmcode);
+        System.out.println(new_url);
+    }
+
+    @Test
+    public void test_luhn_algorithm() {
+        String account_no = "625965087177209";
+        char a = accountService.calculate_final_bank_account_no_digit(account_no);
+        System.out.println(a);
     }
 
 }

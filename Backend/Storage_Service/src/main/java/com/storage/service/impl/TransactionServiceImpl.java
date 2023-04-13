@@ -1,8 +1,7 @@
-package com.storage.storage_service.impl;
+package com.storage.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.pojo.TransactionRecord;
-import com.storage.pojo.BankUser;
 import com.storage.pojo.UserNotification;
 import com.base.util.EmailUtils;
 import com.storage.mapper.BankUserMapper;
@@ -10,7 +9,7 @@ import com.storage.mapper.CardInfoMapper;
 import com.storage.mapper.TransactionRecordMapper;
 import com.storage.mapper.UserNotificationMapper;
 import com.storage.pojo.CardInfo;
-import com.storage.storage_service.TransactionService;
+import com.storage.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,6 +22,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static com.storage.service.utils.UsefulUtils._generate_random_num;
+import static com.storage.service.utils.UsefulUtils._get_redis_confirm_code_key;
 
 @Service
 @Slf4j
@@ -137,20 +139,7 @@ public class TransactionServiceImpl implements TransactionService {
         emailthread.start();
     }
 
-    public String _get_redis_confirm_code_key(String prcId) {
-        return prcId + "_confirm_code";
-    }
 
-    static String _generate_random_num(int length) {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            stringBuilder.append(characters.charAt(index));
-        }
-        return stringBuilder.toString();
-    }
 
     @Override
     public void check_code(String username, String confirmCode) throws Exception{
