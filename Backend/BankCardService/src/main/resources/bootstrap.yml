@@ -1,0 +1,22 @@
+server:
+  servlet:
+    context-path: /storage
+  port: 63020
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bank_application
+    username: root
+    password: youpassword
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+  redis:
+    host: localhost
+    port: 6379
+  application:
+    name: StorageService
+logging:
+  config: classpath:log4j2-dev.xml
+

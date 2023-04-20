@@ -16,7 +16,7 @@ function BankAccountForm () {
     // 在这里处理表单提交
     try {
       const response = await axios.post(storage_url + "/account/open?cardType=" + creditType)
-      if (response.data.code == '-1') {
+      if (response.data.code === '-1') {
         alert("Something goes wrong Please log in again")
       } else {
         alert(response.data.msg)

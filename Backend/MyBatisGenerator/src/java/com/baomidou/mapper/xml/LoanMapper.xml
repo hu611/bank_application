@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baomidou.mapper.LoanMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.baomidou.entity.Loan">
+        <id column="loan_id" property="loanId" />
+        <result column="loan_type" property="loanType" />
+        <result column="prc_id" property="prcId" />
+        <result column="payback_total" property="paybackTotal" />
+        <result column="monthly_payback" property="monthlyPayback" />
+        <result column="interest_rate" property="interestRate" />
+        <result column="current_owe" property="currentOwe" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        loan_id, loan_type, prc_id, payback_total, monthly_payback, interest_rate, current_owe
+    </sql>
+
+</mapper>

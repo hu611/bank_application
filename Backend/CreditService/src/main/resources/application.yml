@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: /credit
+  port: 63040
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bank_application
+    username: root
+    password: youpassword
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+  application:
+    name: KafkaService

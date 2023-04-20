@@ -7,16 +7,18 @@
     <file url="file://$PROJECT_DIR$/Auth/Auth_Model/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Auth/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Auth/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/KafkaProducer/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/KafkaProducer/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BankCardService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BankCardService/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CreditService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CreditService/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/KafkaService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/KafkaService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MyBatisGenerator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MyBatisGenerator/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PackageBase/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PackageBase/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PackageParent/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PackageParent/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Storage_Service/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Storage_Service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/empty_module/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/empty_module/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/test_module/src/main/java" charset="UTF-8" />

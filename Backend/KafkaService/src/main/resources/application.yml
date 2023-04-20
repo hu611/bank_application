@@ -1,0 +1,10 @@
+server:
+  servlet:
+    context-path: /producer
+  port: 63030
+spring:
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+  application:
+    name: KafkaService

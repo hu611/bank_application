@@ -12,6 +12,10 @@
         <option value="$PROJECT_DIR$/KafkaProducer/pom.xml" />
         <option value="$PROJECT_DIR$/PackageBase/pom.xml" />
         <option value="$PROJECT_DIR$/PackageParent/pom.xml" />
+        <option value="$PROJECT_DIR$/CreditCardService/pom.xml" />
+        <option value="$PROJECT_DIR$/BankCardService/pom.xml" />
+        <option value="$PROJECT_DIR$/KafkaService/pom.xml" />
+        <option value="$PROJECT_DIR$/CreditService/pom.xml" />
       </list>
     </option>
   </component>
