@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.mapper.CreditCardMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.base.pojo.CreditCard">
+        <id column="card_no" property="cardNo" />
+        <result column="prc_id" property="prcId" />
+        <result column="opening_date" property="openingDate" />
+        <result column="balance" property="balance" />
+        <result column="cash_advance" property="cashAdvance" />
+        <result column="quota" property="quota" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        card_no, prc_id, opening_date, balance, cash_advance, quota
+    </sql>
+
+</mapper>

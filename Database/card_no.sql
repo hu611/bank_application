@@ -1,6 +1,6 @@
 drop table if exists card_info;
 
-create table card_info (
+create table card_info COMMENT 'Debit card only database'(
   card_no varchar(16) not null,
   prc_id varchar(18) not null,
   opening_date date not null,

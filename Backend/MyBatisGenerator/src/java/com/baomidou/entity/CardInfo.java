@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
  * </p>
  *
  * @author weiyanhu
- * @since 2023-04-09
+ * @since 2023-04-20
  */
 @TableName("card_info")
 @ApiModel(value = "CardInfo对象", description = "")

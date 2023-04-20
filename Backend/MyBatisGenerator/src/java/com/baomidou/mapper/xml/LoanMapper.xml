@@ -11,11 +11,13 @@
         <result column="monthly_payback" property="monthlyPayback" />
         <result column="interest_rate" property="interestRate" />
         <result column="current_owe" property="currentOwe" />
+        <result column="loan_start_date" property="loanStartDate" />
+        <result column="loan_end_date" property="loanEndDate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        loan_id, loan_type, prc_id, payback_total, monthly_payback, interest_rate, current_owe
+        loan_id, loan_type, prc_id, payback_total, monthly_payback, interest_rate, current_owe, loan_start_date, loan_end_date
     </sql>
 
 </mapper>

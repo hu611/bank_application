@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author weiyanhu
- * @since 2023-04-09
+ * @since 2023-04-20
  */
 @Mapper
 public interface CardInfoMapper extends BaseMapper<CardInfo> {

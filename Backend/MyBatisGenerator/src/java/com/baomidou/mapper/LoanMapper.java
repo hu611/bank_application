@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author weiyanhu
- * @since 2023-04-17
+ * @since 2023-04-20
  */
 @Mapper
 public interface LoanMapper extends BaseMapper<Loan> {

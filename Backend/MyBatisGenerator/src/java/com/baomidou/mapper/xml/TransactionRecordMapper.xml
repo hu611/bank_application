@@ -7,13 +7,12 @@
         <id column="transaction_id" property="transactionId" />
         <result column="encoded_transaction" property="encodedTransaction" />
         <result column="transaction_date" property="transactionDate" />
-        <result column="error" property="error" />
         <result column="transaction_type" property="transactionType" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        transaction_id, encoded_transaction, transaction_date, error, transaction_type
+        transaction_id, encoded_transaction, transaction_date, transaction_type
     </sql>
 
 </mapper>

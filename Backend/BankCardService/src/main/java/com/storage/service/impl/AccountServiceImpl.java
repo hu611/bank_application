@@ -31,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
     CardInfoMapper cardInfoMapper;
 
     @Override
-    public void openDebitAccount(String prcId, String username, char card_type) throws Exception {
+    public void openAccount(String prcId, String username, char card_type) throws Exception {
         int cardNo = get_num_card(prcId, card_type);
         if(cardNo > 3) {
             throw new RuntimeException("Too many card numbers");
@@ -76,8 +76,15 @@ public class AccountServiceImpl implements AccountService {
         }
         if(card_type == '0') {
             openDebitAccountAfterConfirm(prcId, pin_num);
+        } else if(card_type == '1') {
+
         }
         redisTemplate.delete(UsefulUtils._get_redis_open_account_code_key(prcId));
+    }
+
+    public void openCreditAccountAfterConfirm(String prcId,
+                                              String pin_num) throws Exception {
+
     }
 
 

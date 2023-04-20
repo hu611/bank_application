@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -13,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
  * </p>
  *
  * @author weiyanhu
- * @since 2023-04-17
+ * @since 2023-04-20
  */
 @ApiModel(value = "Loan对象", description = "")
 public class Loan implements Serializable {
@@ -23,8 +24,8 @@ public class Loan implements Serializable {
     @TableId(value = "loan_id", type = IdType.AUTO)
     private Integer loanId;
 
-    @ApiModelProperty("STUDENT LOAN = 0, Car loan = 1, house loan = 2")
-    private String loanType;
+    @ApiModelProperty("0:car, 1:house, 2:student")
+    private Integer loanType;
 
     private String prcId;
 
@@ -37,6 +38,10 @@ public class Loan implements Serializable {
     @ApiModelProperty("how much does the person currently owe")
     private BigDecimal currentOwe;
 
+    private LocalDate loanStartDate;
+
+    private LocalDate loanEndDate;
+
     public Integer getLoanId() {
         return loanId;
     }
@@ -44,11 +49,11 @@ public class Loan implements Serializable {
     public void setLoanId(Integer loanId) {
         this.loanId = loanId;
     }
-    public String getLoanType() {
+    public Integer getLoanType() {
         return loanType;
     }
 
-    public void setLoanType(String loanType) {
+    public void setLoanType(Integer loanType) {
         this.loanType = loanType;
     }
     public String getPrcId() {
@@ -86,6 +91,20 @@ public class Loan implements Serializable {
     public void setCurrentOwe(BigDecimal currentOwe) {
         this.currentOwe = currentOwe;
     }
+    public LocalDate getLoanStartDate() {
+        return loanStartDate;
+    }
+
+    public void setLoanStartDate(LocalDate loanStartDate) {
+        this.loanStartDate = loanStartDate;
+    }
+    public LocalDate getLoanEndDate() {
+        return loanEndDate;
+    }
+
+    public void setLoanEndDate(LocalDate loanEndDate) {
+        this.loanEndDate = loanEndDate;
+    }
 
     @Override
     public String toString() {
@@ -97,6 +116,8 @@ public class Loan implements Serializable {
             ", monthlyPayback=" + monthlyPayback +
             ", interestRate=" + interestRate +
             ", currentOwe=" + currentOwe +
+            ", loanStartDate=" + loanStartDate +
+            ", loanEndDate=" + loanEndDate +
         "}";
     }
 }

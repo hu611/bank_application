@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
  * </p>
  *
  * @author weiyanhu
- * @since 2023-04-11
+ * @since 2023-04-20
  */
 @TableName("transaction_record")
 @ApiModel(value = "TransactionRecord对象", description = "")
@@ -28,8 +28,6 @@ public class TransactionRecord implements Serializable {
     private String encodedTransaction;
 
     private LocalDate transactionDate;
-
-    private Boolean error;
 
     private String transactionType;
 
@@ -54,13 +52,6 @@ public class TransactionRecord implements Serializable {
     public void setTransactionDate(LocalDate transactionDate) {
         this.transactionDate = transactionDate;
     }
-    public Boolean getError() {
-        return error;
-    }
-
-    public void setError(Boolean error) {
-        this.error = error;
-    }
     public String getTransactionType() {
         return transactionType;
     }
@@ -75,7 +66,6 @@ public class TransactionRecord implements Serializable {
             "transactionId=" + transactionId +
             ", encodedTransaction=" + encodedTransaction +
             ", transactionDate=" + transactionDate +
-            ", error=" + error +
             ", transactionType=" + transactionType +
         "}";
     }

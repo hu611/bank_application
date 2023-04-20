@@ -49,11 +49,7 @@ public class AccountController {
         String prcId = userInfo[1];
         char char_cardType = cardType.charAt(0);
         try {
-            if(char_cardType == '0') {
-                //debit card
-                accountService.openDebitAccount(prcId, username, cardType.charAt(0));
-            }
-
+            accountService.openAccount(prcId, username, char_cardType);
         } catch (Exception e) {
             e.printStackTrace();
             return RestResponse.validfail("Open account failed");
