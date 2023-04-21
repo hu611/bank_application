@@ -34,9 +34,13 @@ public class CreditCard implements Serializable {
 
     private BigDecimal balance;
 
+    private BigDecimal interestAmount;
+
     @ApiModelProperty("预借金额")
     private BigDecimal cashAdvance;
 
     private BigDecimal quota;
+
+    private LocalDate lastBillDate;
 
 }

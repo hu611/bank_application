@@ -13,3 +13,5 @@ spring:
       server-addr: 127.0.0.1:8848
   application:
     name: KafkaService
+logging:
+  config: classpath:log4j2-dev.xml

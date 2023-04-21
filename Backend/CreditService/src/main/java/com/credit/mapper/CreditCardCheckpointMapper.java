@@ -1,11 +1,8 @@
 package com.credit.mapper;
 
-
+import com.base.pojo.CreditCardCheckpoint;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.base.pojo.CreditCard;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 /**
  * <p>
@@ -13,9 +10,9 @@ import java.util.List;
  * </p>
  *
  * @author weiyanhu
- * @since 2023-04-20
+ * @since 2023-04-21
  */
 @Mapper
-public interface CreditCardMapper extends BaseMapper<CreditCard> {
-    CreditCard getCreditCardByPrcId(String prcId);
+public interface CreditCardCheckpointMapper extends BaseMapper<CreditCardCheckpoint> {
+
 }

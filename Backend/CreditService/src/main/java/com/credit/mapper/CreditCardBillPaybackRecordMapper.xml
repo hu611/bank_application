@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.credit.mapper.CreditCardBillPaybackRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.base.pojo.CreditCardBillPaybackRecord">
+        <id column="record_id" property="recordId" />
+        <result column="bill_id" property="billId" />
+        <result column="payback_amount" property="paybackAmount" />
+        <result column="payback_date" property="paybackDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        record_id, bill_id, payback_amount, payback_date
+    </sql>
+
+    <select id="getRecordByBillIdBetweenDate" resultMap="BaseResultMap">
+        select * from credit_card_bill_payback_record where bill_id = #{param1}
+                                                        and payback_date between #{param2} and #{param3} order by payback_date desc
+    </select>
+
+</mapper>

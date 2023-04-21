@@ -5,8 +5,10 @@ create table credit_card(
   prc_id  varchar(18) not null,
   opening_date  date not null,
   balance DECIMAL not null,
+  interest_amount DECIMAL not null,
   cash_advance  DECIMAL not null COMMENT '预借金额',
   quota DECIMAL not null,
+  last_bill_date date not null,
   PRIMARY KEY(card_no),
   INDEX idx_prc_id (prc_id)
 )
