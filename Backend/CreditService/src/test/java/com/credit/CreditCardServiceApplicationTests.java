@@ -3,6 +3,7 @@ package com.credit;
 import com.base.pojo.CreditCard;
 import com.base.pojo.CreditCardBillPaybackRecord;
 import com.credit.Service.CreditService;
+import com.credit.Service.CronSchedulerService;
 import com.credit.mapper.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import java.util.List;
 
 @SpringBootTest
 class CreditCardServiceApplicationTests {
+
+    @Autowired
+    CronSchedulerService cronSchedulerService;
 
     @Autowired
     CreditService creditService;
@@ -64,6 +68,11 @@ class CreditCardServiceApplicationTests {
         BigDecimal bigDecimal = new BigDecimal("0");
         BigDecimal a = bigDecimal.add(new BigDecimal(4));
         System.out.println(a);
+    }
+
+    @Test
+    void test_cron_service() {
+        cronSchedulerService.add_interest_amount();
     }
 
 }

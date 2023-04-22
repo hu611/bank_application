@@ -1,5 +1,6 @@
 package com.base.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,6 +27,7 @@ public class CreditCard implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId
     private String cardNo;
 
     private String prcId;
@@ -33,6 +35,9 @@ public class CreditCard implements Serializable {
     private LocalDate openingDate;
 
     private BigDecimal balance;
+
+    @ApiModelProperty("前期最低还款额")
+    private BigDecimal unpaidMinRepayment;
 
     private BigDecimal interestAmount;
 

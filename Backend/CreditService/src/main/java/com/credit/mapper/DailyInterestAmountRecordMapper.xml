@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.credit.mapper.DailyInterestAmountRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.base.pojo.DailyInterestAmountRecord">
+        <result column="interest_amount" property="interestAmount" />
+        <result column="record_date" property="recordDate" />
+        <result column="prc_id" property="prcId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        record_id, interest_amount, record_date, prc_id
+    </sql>
+
+    <select id="add_record" parameterType="com.base.pojo.DailyInterestAmountRecord">
+        INSERT INTO daily_interest_amount_record (interest_amount, record_date, prc_id)
+        VALUES (#{interestAmount}, #{recordDate}, #{prcId})
+        ON DUPLICATE KEY UPDATE interest_amount=#{interestAmount} + interest_amount;
+    </select>
+
+</mapper>

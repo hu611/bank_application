@@ -1,6 +1,7 @@
 package com.credit.Service.impl;
 
 import com.credit.Utils.Constants;
+import com.credit.Utils.UsefulFunctions;
 import com.credit.mapper.*;
 import com.base.pojo.*;
 import com.credit.Service.CreditService;
@@ -30,9 +31,25 @@ public class CreditServiceImpl implements CreditService {
         return 0;
     }
 
+    /**
+     * 获得最低还款额
+     * @param prcId
+     * @return
+     * @throws Exception
+     */
     @Override
     public BigDecimal getLowestPayBackAmount(String prcId) throws Exception {
-        return null;
+        CreditCard creditCard = creditCardMapper.getCreditCardByPrcId(prcId);
+        BigDecimal res = new BigDecimal(0);
+        //信用额度内消费金额×10%
+        res = res.add(creditCard.getBalance().multiply(new BigDecimal(0.1)));
+        //预借现金交易金额×100%
+        res = res.add(creditCard.getCashAdvance());
+        //前期最低还款额未还部分
+        res = res.add(creditCard.getUnpaidMinRepayment());
+        //所有费用和利息×100%
+        res = res.add(creditCard.getInterestAmount());
+        return res;
     }
 
     /**
@@ -82,7 +99,7 @@ public class CreditServiceImpl implements CreditService {
     }
 
     /**
-     * 因为一个月内可能会多次还钱，所以需要请求他的记录并且分开算
+     * 因为一个月内可能会多次还钱，所以需要请求他的记录并且分开算,用于审计
      * @param owe_amount: end_date的时候当前bill欠钱总数
      * @param creditCardBillPaybackRecords date followed by desc
      * @param start_date
@@ -96,9 +113,7 @@ public class CreditServiceImpl implements CreditService {
         BigDecimal res = new BigDecimal(0);
         for(CreditCardBillPaybackRecord creditCardBillPaybackRecord: creditCardBillPaybackRecords) {
             int days = (int)ChronoUnit.DAYS.between(creditCardBillPaybackRecord.getPaybackDate(), end_date);
-            BigDecimal constant_interest_rate = Constants.INTEREST_RATE;
-            BigDecimal add_interest = constant_interest_rate.multiply(new BigDecimal(days));
-            add_interest = add_interest.multiply(owe_amount);
+            BigDecimal add_interest = UsefulFunctions.calculate_interest(days, owe_amount);
             res = res.add(add_interest);
             owe_amount = owe_amount.add(creditCardBillPaybackRecord.getPaybackAmount());
             end_date = creditCardBillPaybackRecord.getPaybackDate();

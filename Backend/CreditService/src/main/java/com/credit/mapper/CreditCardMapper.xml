@@ -11,11 +11,12 @@
         <result column="cash_advance" property="cashAdvance" />
         <result column="quota" property="quota" />
         <result column="interest_amount" property="interestAmount"/>
+        <result column="unpaid_min_repayment" property="unpaidMinRepayment"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        card_no, prc_id, opening_date, balance, cash_advance, quota
+        card_no, prc_id, opening_date, balance, unpaid_min_repayment, cash_advance, quota
     </sql>
 
     <select id="getCreditCardByPrcId" resultMap="BaseResultMap">
