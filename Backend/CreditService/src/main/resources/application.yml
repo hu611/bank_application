@@ -2,16 +2,29 @@ server:
   servlet:
     context-path: /credit
   port: 63040
+
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 10000
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bank_application
+    url: jdbc:mysql://localhost:3306/bank_application_credit
     username: root
     password: youpassword
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+      discovery: #服务注册相关配置
+        namespace: Bank_Application
+        group: bank_application
+
   application:
-    name: KafkaService
+    name: CreditService
 logging:
   config: classpath:log4j2-dev.xml

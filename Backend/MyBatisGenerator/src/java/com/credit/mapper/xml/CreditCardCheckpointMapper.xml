@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.credit.mapper.CreditCardCheckpointMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.credit.pojo.CreditCardCheckpoint">
+        <id column="checkpoint_id" property="checkpointId" />
+        <result column="card_no" property="cardNo" />
+        <result column="prc_id" property="prcId" />
+        <result column="interest_amount" property="interestAmount" />
+        <result column="checkpoint_date" property="checkpointDate" />
+        <result column="balance" property="balance" />
+        <result column="quota" property="quota" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        checkpoint_id, card_no, prc_id, interest_amount, checkpoint_date, balance, quota
+    </sql>
+
+</mapper>

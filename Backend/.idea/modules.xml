@@ -6,10 +6,10 @@
       <module fileurl="file://$PROJECT_DIR$/Auth/Auth_Api/Auth_Api.iml" filepath="$PROJECT_DIR$/Auth/Auth_Api/Auth_Api.iml" />
       <module fileurl="file://$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" filepath="$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" />
       <module fileurl="file://$PROJECT_DIR$/Backend.iml" filepath="$PROJECT_DIR$/Backend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BankCardService/BankCardService.iml" filepath="$PROJECT_DIR$/BankCardService/BankCardService.iml" />
       <module fileurl="file://$PROJECT_DIR$/CreditService/CreditService.iml" filepath="$PROJECT_DIR$/CreditService/CreditService.iml" />
       <module fileurl="file://$PROJECT_DIR$/KafkaService/KafkaService.iml" filepath="$PROJECT_DIR$/KafkaService/KafkaService.iml" />
       <module fileurl="file://$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" filepath="$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OpenAccountService/OpenAccountService.iml" filepath="$PROJECT_DIR$/OpenAccountService/OpenAccountService.iml" />
       <module fileurl="file://$PROJECT_DIR$/package_base/PackageBase.iml" filepath="$PROJECT_DIR$/package_base/PackageBase.iml" />
       <module fileurl="file://$PROJECT_DIR$/package_parent/PackageParent.iml" filepath="$PROJECT_DIR$/package_parent/PackageParent.iml" />
       <module fileurl="file://$PROJECT_DIR$/PackageBase/package_base.iml" filepath="$PROJECT_DIR$/PackageBase/package_base.iml" />

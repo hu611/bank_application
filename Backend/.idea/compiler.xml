@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for BankCardService" enabled="true">
+      <profile name="Annotation profile for OpenAccountService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -10,10 +10,10 @@
           <entry name="$PROJECT_DIR$/../../../Framework/apache-maven-3.8.4/maven-repo/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
         </processorPath>
         <module name="KafkaService" />
-        <module name="BankCardService" />
         <module name="Auth_Model" />
         <module name="PackageBase" />
         <module name="CreditService" />
+        <module name="OpenAccountService" />
         <module name="package_base" />
         <module name="Auth_Api" />
         <module name="MyBatisGenerator" />
@@ -25,11 +25,11 @@
       <module name="Auth_Api" target="1.8" />
       <module name="Auth_Model" target="1.8" />
       <module name="Bank_Pojo" target="1.5" />
-      <module name="BankCardService" target="1.8" />
       <module name="CreditService" target="1.8" />
       <module name="empty_module" target="1.8" />
       <module name="KafkaService" target="1.8" />
       <module name="MyBatisGenerator" target="1.8" />
+      <module name="OpenAccountService" target="1.8" />
       <module name="package_base" target="1.8" />
       <module name="package_parent" target="1.8" />
       <module name="PackageBase" target="1.8" />
@@ -42,10 +42,10 @@
       <module name="Auth" options="" />
       <module name="Auth_Api" options="" />
       <module name="Auth_Model" options="" />
-      <module name="BankCardService" options="" />
       <module name="CreditService" options="" />
       <module name="KafkaService" options="" />
       <module name="MyBatisGenerator" options="" />
+      <module name="OpenAccountService" options="" />
       <module name="PackageBase" options="" />
       <module name="PackageParent" options="" />
       <module name="empty_module" options="" />

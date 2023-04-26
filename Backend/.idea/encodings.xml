@@ -7,14 +7,14 @@
     <file url="file://$PROJECT_DIR$/Auth/Auth_Model/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Auth/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Auth/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/BankCardService/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/BankCardService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CreditService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CreditService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/KafkaService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/KafkaService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MyBatisGenerator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MyBatisGenerator/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/OpenAccountService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/OpenAccountService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PackageBase/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PackageBase/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PackageParent/src/main/java" charset="UTF-8" />

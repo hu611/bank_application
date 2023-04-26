@@ -20,7 +20,11 @@ public class ProducerController {
 
     @PostMapping("/sendmsg")
     @ResponseBody
-    public String sendMessage(String topic, List<Integer> partitionList,String key, String value) {
+    public String sendMessage(@RequestBody ProduceMessageDto produceMessageDto) {
+        List<Integer> partitionList = produceMessageDto.getPartition();
+        String topic = produceMessageDto.getTopic();
+        String key = produceMessageDto.getKey();
+        String value = produceMessageDto.getValue();
         for(int partition: partitionList) {
             ProducerRecord producerRecord = new ProducerRecord<>(topic,
                     key,value);

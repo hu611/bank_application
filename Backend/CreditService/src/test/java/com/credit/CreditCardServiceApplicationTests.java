@@ -75,4 +75,10 @@ class CreditCardServiceApplicationTests {
         cronSchedulerService.add_interest_amount();
     }
 
+    @Test
+    void test_process_credit_card() throws Exception {
+        cronSchedulerService.create_bank_account();
+
+    }
+
 }

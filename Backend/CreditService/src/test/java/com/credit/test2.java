@@ -22,6 +22,9 @@ public class test2 {
     @Autowired
     CreditCardBillMapper creditCardBillMapper;
 
+
+
+
     @Test
     public void test_day_between() {
         long days = ChronoUnit.DAYS.between(LocalDate.of(2022,5,1),
@@ -36,5 +39,10 @@ public class test2 {
         //get not paid bill
         lambdaQueryWrapper.eq(CreditCardBill::getPaid,0);
         List<CreditCardBill> creditCardBills = creditCardBillMapper.selectList(lambdaQueryWrapper);
+    }
+
+    @Test
+    public void test_kafka_test() {
+        //kafkaFeign.getOffset(Constants.kafka_credit_topic,Constants.kafka_partition);
     }
 }

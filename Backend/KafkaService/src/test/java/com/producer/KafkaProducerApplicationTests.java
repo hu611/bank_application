@@ -31,4 +31,9 @@ class KafkaProducerApplicationTests {
         kafkaProducer.close();
     }
 
+    @Test
+    void testConsumer() {
+
+    }
+
 }

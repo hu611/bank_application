@@ -3,8 +3,22 @@ POST {{producer}}/producer/sendmsg
 Content-Type: application/json
 
 {
-  "topic": "transaction",
+  "topic": "CreditService",
   "key": "whatever",
-  "partition": 0,
+  "partition": [0],
+  "value": "hello from http request"
+}
+
+###get test
+GET {{producer}}/producer/receivemsg?topic=CreditService&partition=0
+
+###producer
+POST {{producer}}/producer/sendmsg
+Content-Type: application/json
+
+{
+  "topic": "test",
+  "partition": [0],
+  "key": "",
   "value": "hello from http request"
 }

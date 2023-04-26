@@ -1,11 +1,13 @@
 package com.credit.Service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.credit.Utils.Constants;
 import com.credit.Utils.UsefulFunctions;
 import com.credit.mapper.*;
 import com.base.pojo.*;
 import com.credit.Service.CreditService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -124,6 +126,11 @@ public class CreditServiceImpl implements CreditService {
         return new BigDecimal[]{res,owe_amount};
     }
 
+    @Override
+    public boolean hasCreditCard(String prcId) throws Exception {
+        CreditCard creditCard = creditCardMapper.getCreditCardByPrcId(prcId);
+        return creditCard == null;
+    }
 }
 
 

@@ -8,4 +8,7 @@ public interface CreditService {
     public BigDecimal getLowestPayBackAmount(String prcId) throws Exception;
 
     public BigDecimal getCreditCardCompoundInterest(String prcId) throws Exception;
+
+    public boolean hasCreditCard(String prcId) throws Exception;
+
 }
