@@ -1,9 +1,10 @@
 package com.storage.Controller;
 
 import com.base.RestResponse;
+import com.base.util.DecryptUtils;
+import com.base.util.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.Dto.TransactionDto;
-import com.storage.service.DecryptService;
 import com.storage.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+import static com.base.util.JsonUtils.preprocess_jsonnode;
+
 @Controller
 @RequestMapping("/transaction")
 public class TransferController {
-    @Autowired
-    DecryptService decryptService;
 
     @Autowired
     TransactionService transactionService;
@@ -26,7 +27,7 @@ public class TransferController {
     public RestResponse deposit_money(@RequestBody TransactionDto transactionDto) {
         try {
             String transaction = transactionDto.getTransaction();
-            JsonNode jsonNode = decryptService.aes_decrypt(transaction);
+            JsonNode jsonNode = DecryptUtils.aes_decrypt(transaction);
             Object principalObj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if(principalObj instanceof String) {
                 //authentication= username prcID
@@ -58,10 +59,7 @@ public class TransferController {
         return RestResponse.success("Success");
     }
 
-    public String preprocess_jsonnode(String json) {
-        //不然就是 比如 amount会变成 "500" 而不是500.
-        return json.substring(1,json.length()-1);
-    }
+
 
     @GetMapping("/generateEmail")
     @ResponseBody

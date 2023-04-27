@@ -129,7 +129,7 @@ public class CreditServiceImpl implements CreditService {
     @Override
     public boolean hasCreditCard(String prcId) throws Exception {
         CreditCard creditCard = creditCardMapper.getCreditCardByPrcId(prcId);
-        return creditCard == null;
+        return creditCard != null;
     }
 }
 

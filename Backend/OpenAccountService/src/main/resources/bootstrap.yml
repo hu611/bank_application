@@ -12,11 +12,15 @@ spring:
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+      discovery:
+        namespace: Bank_Application
+        group: bank_application
   redis:
     host: localhost
     port: 6379
   application:
-    name: StorageService
+
+    name: OpenAccountService
 logging:
   config: classpath:log4j2-dev.xml
 

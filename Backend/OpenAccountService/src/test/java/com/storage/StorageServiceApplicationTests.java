@@ -1,8 +1,9 @@
 package com.storage;
 
+import com.base.util.DecryptUtils;
 import com.base.util.EmailUtils;
+import com.base.util.FileUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.storage.service.DecryptService;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -25,9 +26,6 @@ import java.util.Properties;
 
 @SpringBootTest
 class StorageServiceApplicationTests {
-
-    @Autowired
-    DecryptService decryptService;
     @Test
     void contextLoads() {
         String a = "3031323334353637383961626364656630313233343536373839616263646566";
@@ -60,7 +58,7 @@ class StorageServiceApplicationTests {
     @Test
     public void test_aes_decryption() {
         try {
-            JsonNode jsonNode = decryptService.aes_decrypt(
+            JsonNode jsonNode = DecryptUtils.aes_decrypt(
                     "+9MAKhQ75eno1GkLxf8K7u+3R9V+8j8RNZ2UeZM82GbBRuEeA0OiN5DompKZWUlXaYoexujNoERyyOCb7af0vg==");
             System.out.println(jsonNode.get("account"));
             System.out.println(jsonNode.get("confirmCode"));
@@ -76,6 +74,12 @@ class StorageServiceApplicationTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void test_create_folder() {
+        String folderPath = "../Images/CreditAudit/test"; // Replace with your desired folder path
+        System.out.println(FileUtils.create_folder(folderPath));
     }
 
 

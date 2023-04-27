@@ -9,6 +9,7 @@ create table credit_card(
   interest_amount DECIMAL(18,6) not null,
   cash_advance  DECIMAL(18,6) not null COMMENT '预借金额',
   quota DECIMAL(18,6) not null,
+  pin_num varchar(4) not null,
   last_bill_date date not null,
   PRIMARY KEY(card_no),
   INDEX idx_prc_id (prc_id)

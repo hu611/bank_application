@@ -31,4 +31,6 @@ public class AuditCredit implements Serializable {
     private String prcId;
 
     private String picFolderLoc;
+
+    private String pinNum;
 }

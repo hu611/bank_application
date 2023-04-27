@@ -33,6 +33,7 @@ public class ReceiveController {
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "group-id");
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<String, String>(properties);
 
 
@@ -44,6 +45,7 @@ public class ReceiveController {
         // 获取当前分区的提交偏移量
         offset = kafkaConsumer.position(topicPartition);
         System.out.println(offset);
+        kafkaConsumer.seek(topicPartition,2);
         ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofMillis(1000));
         stringList = new ArrayList<>();
         for (ConsumerRecord consumerRecord : records) {

@@ -1,24 +1,17 @@
-package com.storage.service.impl;
+package com.base.util;
 
-import com.base.util.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.storage.service.DecryptService;
-import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-@Service
-public class DecryptServiceImpl implements DecryptService {
-    final String ALGORITHM = "AES/CBC/PKCS5Padding";
-    final String SECRET_KEY = "0123456789abcdef0123456789abcdef"; // 密钥
-    final String IV = "0123456789abcdef"; // 初始化向量
-    @Override
-    public JsonNode aes_decrypt(String msg) throws Exception {
-
+public class DecryptUtils {
+    final static String ALGORITHM = "AES/CBC/PKCS5Padding";
+    final static String SECRET_KEY = "0123456789abcdef0123456789abcdef"; // 密钥
+    final static String IV = "0123456789abcdef"; // 初始化向量
+    public static JsonNode aes_decrypt(String msg) throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes("UTF-8"), "AES");
         IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes("UTF-8"));
         Cipher cipher = Cipher.getInstance(ALGORITHM);

@@ -18,6 +18,8 @@ public class CreditController {
         return null;
     }
 
+
+
     @GetMapping("/haveCreditCard")
     @ResponseBody
     public boolean hasCreditCard(@RequestParam("prc_id") String prc_id) throws Exception {

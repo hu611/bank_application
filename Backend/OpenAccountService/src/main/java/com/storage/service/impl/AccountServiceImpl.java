@@ -34,6 +34,18 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     CreditCardFeign creditCardFeign;
 
+    /**
+     * /*
+     * This function is responsible for opening an account. It takes a prcId, username, and card_type as parameters and checks
+     * if there are too many card numbers, if the customer already has a credit card and if the customer has an email.
+     * It then generates a random confirmation code and sets it in the Redis. Finally, a thread is spawned and used to send an email
+     * to the customer containing a link with the confirmation code.
+     *
+     * @param prcId
+     * @param username
+     * @param card_type
+     * @throws Exception
+     */
     @Override
     public void openAccount(String prcId, String username, char card_type) throws Exception {
         int cardNo = get_num_debit_card(prcId, card_type);
@@ -47,7 +59,12 @@ public class AccountServiceImpl implements AccountService {
         if(userNotification == null || userNotification.getEmail() == null || userNotification.getEmail().length() == 0) {
             throw new RuntimeException("User Email Does not exist");
         }
-        String new_url = ServerConfig.FRONTEND_LOCATION + "/confirmOpenAccount";
+        String new_url = "";
+        if(card_type == '0') {
+            new_url = ServerConfig.FRONTEND_LOCATION + "/confirmDebit";
+        } else {
+            new_url = ServerConfig.FRONTEND_LOCATION + "/confirmCredit";
+        }
         //todo send email to confirm
         String confirmcode = UsefulUtils._generate_random_num(4);
         new_url = new_url + String.format("?username=%s&confirmcode=%s", username,confirmcode);
@@ -66,26 +83,32 @@ public class AccountServiceImpl implements AccountService {
             }
         });
         thread.start();
-
     }
 
+
+    /**
+     * openDebitAccountAfterConfirm is used to open a debit account after receiving confirmation through a given process ID,
+     * username, confirmation code, and pin number. It checks if the stored confirmation code matches the input code before
+     * proceeding to open the account. If they don't match, an error is thrown. Finally, it clears the redisTemplate.
+     * @param prcId
+     * @param username
+     * @param confirm_code
+     * @param pin_num
+     * @throws Exception
+     */
     @Override
-    public void openAccountAfterConfirm(String prcId, String username, String confirm_code, String pin_num) throws Exception {
+    public void openDebitAccountAfterConfirm(String prcId, String username, String confirm_code, String pin_num) throws Exception {
         String stored_confirm_code = (String) redisTemplate.opsForValue()
                 .get(UsefulUtils._get_redis_open_account_code_key(prcId));
         if(stored_confirm_code == null) {
             throw new RuntimeException("会话过期了，请重新申请");
         }
-        char card_type = stored_confirm_code.charAt(0);
         String redis_confirm_code = stored_confirm_code.substring(1);
         if(!redis_confirm_code.equals(confirm_code)) {
             throw new RuntimeException("The confirm code is different from input code");
         }
-        if(card_type == '0') {
-            openDebitAccountAfterConfirm(prcId, pin_num);
-        } else if(card_type == '1') {
+        openDebitAccountAfterConfirm(prcId, pin_num);
 
-        }
         redisTemplate.delete(UsefulUtils._get_redis_open_account_code_key(prcId));
     }
 

@@ -2,15 +2,12 @@ server:
   servlet:
     context-path: /credit
   port: 63040
-
-
 feign:
   client:
     config:
       default:
         connectTimeout: 60000
         readTimeout: 10000
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -20,7 +17,7 @@ spring:
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
-      discovery: #服务注册相关配置
+      discovery:
         namespace: Bank_Application
         group: bank_application
 

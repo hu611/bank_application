@@ -1,12 +1,12 @@
 package com.storage;
 
+import com.base.util.DecryptUtils;
 import com.base.util.EmailUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.mapper.CardInfoMapper;
 import com.storage.mapper.UserNotificationMapper;
 import com.storage.pojo.UserNotification;
 import com.storage.service.AccountService;
-import com.storage.service.DecryptService;
 import com.storage.service.TransactionService;
 import com.storage.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -27,9 +27,6 @@ public class DepositTest {
     TransactionService transactionService;
 
     @Autowired
-    DecryptService decryptService;
-
-    @Autowired
     CardInfoMapper cardInfoMapper;
 
     @Autowired
@@ -48,7 +45,7 @@ public class DepositTest {
     @Test
     public void test_aes_decryption() {
         try {
-            JsonNode jsonNode = decryptService.aes_decrypt("UYXL+AWJk8Y6p9hSzBrtJcYJ+cnjLdSkBDib3+G9wGTSzQ7OLqhCxDe2lmeeVvBlVDlb5xysn57BLiRfirl8rA==");
+            JsonNode jsonNode = DecryptUtils.aes_decrypt("UYXL+AWJk8Y6p9hSzBrtJcYJ+cnjLdSkBDib3+G9wGSWB4zYL1F0+3L9agoAMHIcg7Yj10ibdiXB9wP8gOInIw==");
             System.out.println(jsonNode.get("confirmCode"));
             System.out.println(jsonNode.get("pinNum"));
         } catch (Exception e) {
@@ -59,7 +56,7 @@ public class DepositTest {
     @Test
     public void test_big_decimal() {
         try {
-            JsonNode jsonNode = decryptService.aes_decrypt("+9MAKhQ75eno1GkLxf8K7u+3R9V+8j8RNZ2UeZM82GbaahOLeCTTTup6WvJOXTpM5Fx7Uqu9gPDuBWzsyvf6AQ==");
+            JsonNode jsonNode = DecryptUtils.aes_decrypt("+9MAKhQ75eno1GkLxf8K7u+3R9V+8j8RNZ2UeZM82GbaahOLeCTTTup6WvJOXTpM5Fx7Uqu9gPDuBWzsyvf6AQ==");
             String amount = jsonNode.get("amount").toString();
             amount = amount.substring(1,amount.length()-1);
             BigDecimal decimal = new BigDecimal(amount);

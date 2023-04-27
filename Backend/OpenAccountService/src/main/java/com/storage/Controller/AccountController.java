@@ -1,23 +1,20 @@
 package com.storage.Controller;
 
 import com.base.RestResponse;
+import com.base.util.DecryptUtils;
+import com.base.util.FileUtils;
+import com.base.util.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.Dto.ConfirmMsgDto;
-import com.storage.Dto.TransactionDto;
 import com.storage.service.AccountService;
-import com.storage.service.DecryptService;
 import com.storage.service.utils.UsefulUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletRequest;
+import java.io.File;
 
 
 @Controller
@@ -26,9 +23,6 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
-
-    @Autowired
-    DecryptService decryptService;
 
     public String[] get_token_user() {
         Object principalObj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -58,11 +52,11 @@ public class AccountController {
 
     }
 
-    @RequestMapping("/confirm")
+    @RequestMapping("/confirmDebit")
     @ResponseBody
     public RestResponse open_bank_confirm(@RequestBody ConfirmMsgDto confirmMsgDto) throws Exception {
         String[]userInfo = get_token_user();
-        JsonNode jsonNode = decryptService.aes_decrypt(confirmMsgDto.getConfirm_msg());
+        JsonNode jsonNode = DecryptUtils.aes_decrypt(confirmMsgDto.getConfirm_msg());
         String username = UsefulUtils.remove_first_and_last_char(jsonNode.get("username").toString());
         String confirmCode = UsefulUtils.remove_first_and_last_char(jsonNode.get("confirmCode").toString());
         String pinNum = UsefulUtils.remove_first_and_last_char(jsonNode.get("pinNum").toString());
@@ -70,8 +64,28 @@ public class AccountController {
         if(!userInfo[0].equals(username)) {
             return RestResponse.validfail("confirm user is different from login user");
         }
+        accountService.openDebitAccountAfterConfirm(userInfo[1],username,confirmCode,pinNum);
+        return RestResponse.success();
+    }
 
-        accountService.openAccountAfterConfirm(userInfo[1],username,confirmCode,pinNum);
+    @RequestMapping("/confirmCredit")
+    @ResponseBody
+    public RestResponse credit_confirm(@RequestPart("aes_message") String aes_message,
+                                       @RequestPart("IdCard")MultipartFile IdCardFile,
+                                       @RequestPart("salaryCard") MultipartFile salaryCard,
+                                       @RequestPart("addressProof") MultipartFile addressProof,
+                                       @RequestPart("taxDocument") MultipartFile taxDocument) throws Exception {
+        String[]userInfo = get_token_user();
+        JsonNode jsonNode = DecryptUtils.aes_decrypt(aes_message);
+        String username = JsonUtils.preprocess_jsonnode(jsonNode.get("username").toString());
+        if(!username.equals(userInfo[0])) {
+            //not same record
+            return RestResponse.validfail("You think you are smart? Don't fool us");
+        }
+        String folderPath = "Images/CreditAudit/" + userInfo[1]; // Replace with your desired folder path
+        FileUtils.create_folder(folderPath);
+        folderPath = folderPath + "/";
+        FileUtils.save_image(folderPath,IdCardFile, salaryCard, addressProof, taxDocument);
         return RestResponse.success();
     }
 }

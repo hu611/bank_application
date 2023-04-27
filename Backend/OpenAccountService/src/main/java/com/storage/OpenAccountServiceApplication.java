@@ -6,10 +6,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
 @SpringBootApplication
-public class StorageServiceApplication {
+public class OpenAccountServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StorageServiceApplication.class, args);
+        SpringApplication.run(OpenAccountServiceApplication.class, args);
     }
 
 }

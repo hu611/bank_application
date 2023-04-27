@@ -12,6 +12,7 @@
         <result column="quota" property="quota" />
         <result column="interest_amount" property="interestAmount"/>
         <result column="unpaid_min_repayment" property="unpaidMinRepayment"/>
+        <result column="pin_num" property="pinNum"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

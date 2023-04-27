@@ -36,6 +36,8 @@ public class CreditCard implements Serializable {
 
     private BigDecimal balance;
 
+    private String pinNum;
+
     @ApiModelProperty("前期最低还款额")
     private BigDecimal unpaidMinRepayment;
 
