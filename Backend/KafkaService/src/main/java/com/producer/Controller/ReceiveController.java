@@ -44,8 +44,7 @@ public class ReceiveController {
         kafkaConsumer.assign(Collections.singletonList(topicPartition));
         // 获取当前分区的提交偏移量
         offset = kafkaConsumer.position(topicPartition);
-        System.out.println(offset);
-        kafkaConsumer.seek(topicPartition,2);
+        kafkaConsumer.seek(topicPartition,offset);
         ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofMillis(1000));
         stringList = new ArrayList<>();
         for (ConsumerRecord consumerRecord : records) {

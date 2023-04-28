@@ -4,9 +4,9 @@ Content-Type: application/json
 
 {
   "topic": "CreditService",
-  "key": "whatever",
+  "key": "a",
   "partition": [0],
-  "value": "hello from http request"
+  "value": "4"
 }
 
 ###get test

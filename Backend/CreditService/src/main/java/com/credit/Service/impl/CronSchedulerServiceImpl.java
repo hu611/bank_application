@@ -96,17 +96,25 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
 
         List<Object> msgList = kafkaFeign.receiveMsg(Constants.kafka_credit_topic, Constants.kafka_partition);
         List<AuditCredit> auditCreditList = new ArrayList<>();
+
         //get all credit card requests for last 20 minutes
         for(Object obj_msg: msgList) {
             String msg = obj_msg.toString();
             System.out.println("==============msg is " + msg);
-            //msg format: "prcId folder_file_pic"
+            //msg format: "prcId folder_file_pic pinNum"
             String[] msg_split = msg.split(" ");
+            if(msg_split.length != 3) {
+                System.out.println(obj_msg + "has wrong format");
+                //error format from open account server.
+                continue;
+            }
             String prcId = msg_split[0];
             String folder_file_pic = msg_split[1];
+            String pin_num = msg_split[2];
             AuditCredit auditCredit = new AuditCredit();
             auditCredit.setPicFolderLoc(folder_file_pic);
             auditCredit.setPrcId(prcId);
+            auditCredit.setPinNum(pin_num);
             auditCreditList.add(auditCredit);
         }
 

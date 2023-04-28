@@ -4,6 +4,9 @@ import com.base.util.DecryptUtils;
 import com.base.util.EmailUtils;
 import com.base.util.FileUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.storage.Dto.ProduceMessageDto;
+import com.storage.service.feign.KafkaFeign;
+import io.swagger.models.auth.In;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -19,13 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Properties;
+import java.util.*;
 
 @SpringBootTest
 class StorageServiceApplicationTests {
+    @Autowired
+    KafkaFeign kafkaFeign;
+
     @Test
     void contextLoads() {
         String a = "3031323334353637383961626364656630313233343536373839616263646566";
@@ -80,6 +83,17 @@ class StorageServiceApplicationTests {
     public void test_create_folder() {
         String folderPath = "../Images/CreditAudit/test"; // Replace with your desired folder path
         System.out.println(FileUtils.create_folder(folderPath));
+    }
+
+    @Test
+    public void test_kafka_feign() {
+        ProduceMessageDto produceMessageDto = new ProduceMessageDto();
+        List<Integer> al = new ArrayList<Integer>();
+        al.add(0);
+        produceMessageDto.setPartition(al);
+        produceMessageDto.setTopic("CreditService");
+        produceMessageDto.setValue("hello");
+        kafkaFeign.sendMessage(produceMessageDto);
     }
 
 

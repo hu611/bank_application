@@ -5,4 +5,6 @@ public interface AccountService {
 
 
     public void openDebitAccountAfterConfirm(String prcId, String username, String confirm_code, String pin_num) throws Exception;
+
+    public boolean checkConfirmCode(String prcId, String confirmcode) throws Exception;
 }

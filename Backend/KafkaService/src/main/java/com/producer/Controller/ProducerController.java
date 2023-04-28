@@ -26,8 +26,7 @@ public class ProducerController {
         String key = produceMessageDto.getKey();
         String value = produceMessageDto.getValue();
         for(int partition: partitionList) {
-            ProducerRecord producerRecord = new ProducerRecord<>(topic,
-                    key,value);
+            ProducerRecord producerRecord = new ProducerRecord<>(topic, partition,key, value);
             try {
                 kafkaProducer.send(producerRecord, new Callback() {
                     @Override

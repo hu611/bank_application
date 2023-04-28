@@ -65,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
         } else {
             new_url = ServerConfig.FRONTEND_LOCATION + "/confirmCredit";
         }
-        //todo send email to confirm
+        //send email to user to confirm
         String confirmcode = UsefulUtils._generate_random_num(4);
         new_url = new_url + String.format("?username=%s&confirmcode=%s", username,confirmcode);
         redisTemplate.opsForValue().set(UsefulUtils._get_redis_open_account_code_key(prcId), card_type + confirmcode,
@@ -98,18 +98,27 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public void openDebitAccountAfterConfirm(String prcId, String username, String confirm_code, String pin_num) throws Exception {
-        String stored_confirm_code = (String) redisTemplate.opsForValue()
-                .get(UsefulUtils._get_redis_open_account_code_key(prcId));
-        if(stored_confirm_code == null) {
-            throw new RuntimeException("会话过期了，请重新申请");
-        }
-        String redis_confirm_code = stored_confirm_code.substring(1);
-        if(!redis_confirm_code.equals(confirm_code)) {
-            throw new RuntimeException("The confirm code is different from input code");
+        if(!checkConfirmCode(prcId, confirm_code)) {
+            throw new RuntimeException("Confirm code error");
         }
         openDebitAccountAfterConfirm(prcId, pin_num);
 
         redisTemplate.delete(UsefulUtils._get_redis_open_account_code_key(prcId));
+    }
+
+    @Override
+    public boolean checkConfirmCode(String prcId, String confirm_code) throws Exception{
+        String stored_confirm_code = (String) redisTemplate.opsForValue()
+                .get(UsefulUtils._get_redis_open_account_code_key(prcId));
+        if(stored_confirm_code == null) {
+            return false;
+        }
+        //first character is card type
+        String redis_confirm_code = stored_confirm_code.substring(1);
+        if(!redis_confirm_code.equals(confirm_code)) {
+            return false;
+        }
+        return true;
     }
 
     public void openCreditAccountAfterConfirm(String prcId,
