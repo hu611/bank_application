@@ -9,6 +9,8 @@
     <file url="file://$PROJECT_DIR$/Auth/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CreditService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CreditService/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GatewayService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GatewayService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/KafkaService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/KafkaService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MyBatisGenerator/src/main/java" charset="UTF-8" />

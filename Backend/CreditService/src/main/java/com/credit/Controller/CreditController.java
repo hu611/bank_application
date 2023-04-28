@@ -15,7 +15,7 @@ public class CreditController {
     @GetMapping("/getCreditScore")
     @ResponseBody
     public RestResponse getCreditScore() {
-        return null;
+        return RestResponse.success("Congrats");
     }
 
 

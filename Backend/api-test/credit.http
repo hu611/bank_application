@@ -1,0 +1,2 @@
+#get credit score
+GET {{gateway}}/credit/getCreditScore

@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" filepath="$PROJECT_DIR$/Auth/Auth_Model/Auth_Model.iml" />
       <module fileurl="file://$PROJECT_DIR$/Backend.iml" filepath="$PROJECT_DIR$/Backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/CreditService/CreditService.iml" filepath="$PROJECT_DIR$/CreditService/CreditService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GatewayService/GatewayService.iml" filepath="$PROJECT_DIR$/GatewayService/GatewayService.iml" />
       <module fileurl="file://$PROJECT_DIR$/KafkaService/KafkaService.iml" filepath="$PROJECT_DIR$/KafkaService/KafkaService.iml" />
       <module fileurl="file://$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" filepath="$PROJECT_DIR$/MyBatisGenerator/MyBatisGenerator.iml" />
       <module fileurl="file://$PROJECT_DIR$/OpenAccountService/OpenAccountService.iml" filepath="$PROJECT_DIR$/OpenAccountService/OpenAccountService.iml" />

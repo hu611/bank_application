@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: Gateway Service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      discovery:
+        group: bank_application
+        namespace: Bank_Application
+    gateway:
+      routes:
+        - uri: lb://CreditService
+          predicates:
+            - Path=/credit/**
+        - uri: lb://KafkaService
+          predicates:
+            - Path=/producer/**
+        - uri: lb://OpenAccountService
+          predicates:
+            - Path=/storage/**
+        - uri: lb://AuthService
+          predicates:
+            - Path=/auth/**
+server:
+  port: 63000
+

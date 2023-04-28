@@ -35,7 +35,7 @@ function Header () {
         </div>
         <div className="header">
           <div className="header_area">
-            <h1 className="logo"><a title="中国银行"></a></h1>
+            <h1 className="logo"><a title="中国银行" href='/'></a></h1>
             <div className="header_info">
               <p className="phone">服务热线：<span>110</span>信用卡热线：<span>110</span></p>
               <form name="trssearchform" id="trssearchform" action="https://srh.bankofchina.com/search/sitesearch/index.jsp"

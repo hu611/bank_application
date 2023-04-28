@@ -3,6 +3,7 @@ import axios from 'axios'
 import CryptoJS from 'crypto-js'
 import '../axios_interceptor'
 import { storage_url } from '../constants'
+import Header from '../Utils/header'
 
 function TransferForm () {
   const [accountNumber, setAccountNumber] = useState('')
@@ -74,6 +75,7 @@ function TransferForm () {
 
   return (
     <div>
+      <Header></Header>
       <label>
         账户号码:
         <input type='text' readonly value={accountNumber}></input>

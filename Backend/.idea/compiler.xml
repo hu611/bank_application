@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for OpenAccountService" enabled="true">
+      <profile name="Annotation profile for GatewayService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -16,6 +16,7 @@
         <module name="OpenAccountService" />
         <module name="package_base" />
         <module name="Auth_Api" />
+        <module name="GatewayService" />
         <module name="MyBatisGenerator" />
       </profile>
     </annotationProcessing>
@@ -27,6 +28,7 @@
       <module name="Bank_Pojo" target="1.5" />
       <module name="CreditService" target="1.8" />
       <module name="empty_module" target="1.8" />
+      <module name="GatewayService" target="1.8" />
       <module name="KafkaService" target="1.8" />
       <module name="MyBatisGenerator" target="1.8" />
       <module name="OpenAccountService" target="1.8" />
@@ -43,6 +45,7 @@
       <module name="Auth_Api" options="" />
       <module name="Auth_Model" options="" />
       <module name="CreditService" options="" />
+      <module name="GatewayService" options="" />
       <module name="KafkaService" options="" />
       <module name="MyBatisGenerator" options="" />
       <module name="OpenAccountService" options="" />
