@@ -1,0 +1,23 @@
+.align_center {
+  margin-top: 50px;
+  margin-left: 17%;
+}
+table {
+  margin-left: 17%;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+}
+.card-image {
+  max-width: 200px;
+  margin-left: 17%;
+  src: url(debit_card.jpeg);
+  display: block;
+}
+.card-info {
+  font-size: 20px;
+}

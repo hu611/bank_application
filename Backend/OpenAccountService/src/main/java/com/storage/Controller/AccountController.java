@@ -6,6 +6,7 @@ import com.base.util.FileUtils;
 import com.base.util.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.Constants;
+import com.storage.Dto.CardInfoDto;
 import com.storage.Dto.ConfirmMsgDto;
 import com.storage.Dto.ProduceMessageDto;
 import com.storage.service.AccountService;
@@ -117,5 +118,47 @@ public class AccountController {
 
 
         return RestResponse.success();
+    }
+
+    @GetMapping("/getCardInfo")
+    @ResponseBody
+    public RestResponse getCardInfo() {
+        String[]userInfo = get_token_user();
+        if(userInfo == null) {
+            return RestResponse.validfail("Please Log in");
+        }
+        String username = userInfo[0];
+        String prcId = userInfo[1];
+        try {
+            List<CardInfoDto> cardInfoDtos = accountService.getCardInfo(prcId, username);
+            return RestResponse.success(blurCardNum(cardInfoDtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RestResponse.validfail(e.getMessage());
+        }
+    }
+
+    public List<CardInfoDto> blurCardNum(List<CardInfoDto> cardInfoDtos) {
+        for(CardInfoDto cardInfoDto: cardInfoDtos) {
+            String cardNum = cardInfoDto.getCardNum();
+            cardInfoDto.setCardNum(cardNum.substring(0,6) + "***" + cardNum.substring(13));
+        }
+        return cardInfoDtos;
+    }
+
+    @PostMapping("/transfer")
+    @ResponseBody
+    public RestResponse transfer(@RequestBody String aes_string) {
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = DecryptUtils.aes_decrypt(aes_string);
+        } catch (Exception e) {
+            e.printStackTrace();
+            RestResponse.validfail("Error while decrypting sent data");
+        }
+        String sender_id = jsonNode.get("id").toString();
+        String recipientBankAccount = jsonNode.get("recipient").toString();
+        //TODO this is for tmr
+        //accountService.transfer()
     }
 }

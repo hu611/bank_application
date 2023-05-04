@@ -9,6 +9,10 @@ public class UsefulUtils {
         return prcId + "_confirm_code";
     }
 
+    public static String _get_redis_bank_account_key(int id, String username) {
+        return username + "_bank_account_" + id;
+    }
+
     public static String _generate_random_num(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();

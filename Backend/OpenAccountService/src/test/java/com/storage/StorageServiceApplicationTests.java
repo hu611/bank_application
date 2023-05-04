@@ -5,6 +5,7 @@ import com.base.util.EmailUtils;
 import com.base.util.FileUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.Dto.ProduceMessageDto;
+import com.storage.mapper.CardInfoMapper;
 import com.storage.service.feign.KafkaFeign;
 import io.swagger.models.auth.In;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -28,6 +29,9 @@ import java.util.*;
 class StorageServiceApplicationTests {
     @Autowired
     KafkaFeign kafkaFeign;
+
+    @Autowired
+    CardInfoMapper cardInfoMapper;
 
     @Test
     void contextLoads() {
@@ -94,6 +98,14 @@ class StorageServiceApplicationTests {
         produceMessageDto.setTopic("CreditService");
         produceMessageDto.setValue("hello");
         kafkaFeign.sendMessage(produceMessageDto);
+    }
+
+    @Test
+    public void test_card_num() {
+        List<String>cardNumList = cardInfoMapper.getCardByPrcId("1");
+        for(String cardNum: cardNumList){
+            System.out.println(cardNum);
+        }
     }
 
 

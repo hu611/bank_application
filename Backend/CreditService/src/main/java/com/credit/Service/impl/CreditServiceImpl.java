@@ -25,6 +25,11 @@ public class CreditServiceImpl implements CreditService {
     @Autowired
     CreditCardMapper creditCardMapper;
 
+    @Override
+    public CreditCard getCreditCardByPrcId(String prcId) throws Exception {
+        return creditCardMapper.getCreditCardByPrcId(prcId);
+    }
+
     @Autowired
     CreditCardBillPaybackRecordMapper creditCardBillPaybackRecordMapper;
 

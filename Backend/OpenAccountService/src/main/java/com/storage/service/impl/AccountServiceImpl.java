@@ -1,6 +1,10 @@
 package com.storage.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.BeanUtils;
+import com.base.pojo.CreditCard;
 import com.base.util.EmailUtils;
+import com.storage.Dto.CardInfoDto;
 import com.storage.config.ServerConfig;
 import com.storage.mapper.CardInfoMapper;
 import com.storage.pojo.CardInfo;
@@ -15,9 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -52,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
         if(cardNo > 3) {
             throw new RuntimeException("Too many card numbers");
         }
-        if(has_credit_card(prcId)) {
+        if(has_credit_card(prcId) && card_type == '1') {
             throw new RuntimeException("You already have one credit card");
         }
         UserNotification userNotification = userNotificationMapper.selectById(prcId);
@@ -121,12 +123,60 @@ public class AccountServiceImpl implements AccountService {
         return true;
     }
 
-    public void openCreditAccountAfterConfirm(String prcId,
-                                              String pin_num) throws Exception {
+    @Override
+    public List<CardInfoDto> getCardInfo(String prcId, String username) throws Exception {
+        List<CardInfoDto> ret =  new ArrayList<>();
+        HashMap<Integer, String> redis_hm = new HashMap<>();
+        //get Debit card information
+        List<String> cardNumList = cardInfoMapper.getCardByPrcId(prcId);
+        int i = 0;
+        for(String cardNum: cardNumList) {
+            CardInfoDto cardInfoDto = new CardInfoDto();
+            cardInfoDto.setCardType("Debit Card");
+            cardInfoDto.setId(i++);
+            cardInfoDto.setCardNum(cardNum);
+            ret.add(cardInfoDto);
+            redis_hm.put(i,cardNum);
+        }
+        //get credit card information
+        CreditCard creditCard = creditCardFeign.getCreditCard(prcId);
+        if(creditCard != null) {
+            CardInfoDto cardInfoDto = new CardInfoDto();
+            cardInfoDto.setCardNum(creditCard.getCardNo());
+            cardInfoDto.setCardType("Credit Card");
+            cardInfoDto.setId(i);
+            ret.add(cardInfoDto);
+            redis_hm.put(i, creditCard.getCardNo());
+        }
 
+        //store id CardNum combination to redis
+        Thread redisThread = new RedisThread(redis_hm, username);
+        redisThread.start();
+
+        return ret;
     }
 
+    public class RedisThread extends Thread {
+        HashMap<Integer, String> redis_hm;
+        String username;
 
+        public RedisThread(HashMap<Integer, String> redis_hm, String username) {
+            this.redis_hm = redis_hm;
+            this.username = username;
+        }
+        @Override
+        public void run() {
+            Iterator<Map.Entry<Integer,String>> iterator = redis_hm.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Integer, String> curr = iterator.next();
+                String usernameKey = UsefulUtils._get_redis_bank_account_key(curr.getKey(),this.username);
+                redisTemplate.opsForValue().set(usernameKey,curr.getValue()
+                        ,ServerConfig.BANK_NUMBER_REDIS_MINUTES, TimeUnit.MINUTES);
+                System.out.println("storing key: " + usernameKey + " value: " + curr.getValue() + " to redis server");
+            }
+            super.run();
+        }
+    }
 
     public void openDebitAccountAfterConfirm(String prcId,
                                              String pin_num) throws Exception {

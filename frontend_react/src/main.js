@@ -6,7 +6,7 @@ function Main () {
     <Header></Header>
     <ul className="main_list">
       <li>
-        <a href="/transfer"> 充值</a>
+        <a href="/cardInfo">银行卡信息</a>
         <br></br>
         <a href="/openAccount"> 开户</a>
         <br></br>

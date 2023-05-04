@@ -4,6 +4,8 @@ import '../axios_interceptor'
 import { aes_encrypt } from "../encrypt"
 import axios from "axios"
 import { storage_url } from "../constants"
+import Header from "../Utils/header"
+import './style.scss'
 
 function Confirm_Open_Account () {
   const [username, setUsername] = useState('')
@@ -34,7 +36,7 @@ function Confirm_Open_Account () {
       "confirm_msg": encrypted_msg
     }
     try {
-      const response = await axios.post(storage_url + `/account/confirm`, confirm_msg)
+      const response = await axios.post(storage_url + `/account/confirmDebit`, confirm_msg)
 
       if (response.data.code === '-1') {
         alert(response.data.msg)
@@ -48,7 +50,9 @@ function Confirm_Open_Account () {
 
   return (
     <div>
-      <label>
+      <Header></Header>
+
+      <label className="align_center">
         PIN:
         <input type="password" maxLength="4" value={pinNum} onChange={e => setPinNum(e.target.value)} />
       </label>
