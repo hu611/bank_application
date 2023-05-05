@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Header from "../Utils/header"
 import bcrypt from 'bcryptjs'
+import { useLocation } from 'react-router-dom'
 import { redirect, useNavigate } from "react-router-dom"
 
 const get_salt_link = `http://localhost:63010/auth/getsalt`
@@ -44,6 +45,14 @@ function LoginPage () {
   const navigate = useNavigate()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [redirectUrl, setRedirectUrl] = useState("")
+  const [cardId, setCardId] = useState("")
+  const { search } = useLocation()
+  const queryParams = new URLSearchParams(search)
+  useEffect(() => {
+    setRedirectUrl(queryParams.get("redirect"))
+    setCardId(queryParams.get("cardId"))
+  })
 
 
   const handleUsernameChange = (event) => {
@@ -71,9 +80,14 @@ function LoginPage () {
       console.log("successful")
       if (jwtToken !== null) {
         localStorage.setItem('jwtToken', jwtToken)
-        navigate('/')
+        if (redirectUrl !== null) {
+          navigate(redirectUrl)
+        } else {
+          navigate('/')
+        }
       }
-    } catch {
+    } catch (e) {
+      console.log(e)
       alert("wrong password or username")
     }
 

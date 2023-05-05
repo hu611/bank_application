@@ -8,11 +8,12 @@
         <result column="encoded_transaction" property="encodedTransaction" />
         <result column="transaction_date" property="transactionDate" />
         <result column="transaction_type" property="transactionType" />
+        <result column="transaction_result" property="transactionResult" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        transaction_id, encoded_transaction, transaction_date, transaction_type
+        transaction_id, encoded_transaction, transaction_date, transaction_type, transaction_result
     </sql>
 
 </mapper>

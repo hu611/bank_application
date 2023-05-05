@@ -149,16 +149,27 @@ public class AccountController {
     @PostMapping("/transfer")
     @ResponseBody
     public RestResponse transfer(@RequestBody String aes_string) {
-        JsonNode jsonNode = null;
+        String[]userInfo = get_token_user();
         try {
-            jsonNode = DecryptUtils.aes_decrypt(aes_string);
+            accountService.transfer(aes_string, userInfo[0],userInfo[1]);
         } catch (Exception e) {
             e.printStackTrace();
-            RestResponse.validfail("Error while decrypting sent data");
+            return RestResponse.validfail(e.getMessage());
         }
-        String sender_id = jsonNode.get("id").toString();
-        String recipientBankAccount = jsonNode.get("recipient").toString();
-        //TODO this is for tmr
-        //accountService.transfer()
+        return RestResponse.success();
+    }
+
+    @GetMapping("/getBankAccountById")
+    @ResponseBody
+    public RestResponse getBankAccountById(@RequestParam("Id") String bank_id){
+        String[]userInfo = get_token_user();
+        try {
+            String redisValue = accountService.getBankAccountById(userInfo[0], Integer.parseInt(bank_id));
+            System.out.println(redisValue + "da");
+            return RestResponse.success(redisValue);
+        } catch (Exception e) {
+            return RestResponse.validfail(e.getMessage());
+        }
+
     }
 }

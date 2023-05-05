@@ -2,11 +2,16 @@ package com.storage.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.BeanUtils;
+import com.base.RestResponse;
 import com.base.pojo.CreditCard;
+import com.base.pojo.TransactionRecord;
+import com.base.util.DecryptUtils;
 import com.base.util.EmailUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.Dto.CardInfoDto;
 import com.storage.config.ServerConfig;
 import com.storage.mapper.CardInfoMapper;
+import com.storage.mapper.TransactionRecordMapper;
 import com.storage.pojo.CardInfo;
 import com.storage.pojo.UserNotification;
 import com.storage.mapper.UserNotificationMapper;
@@ -16,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.storage.service.utils.UsefulUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,6 +43,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     CreditCardFeign creditCardFeign;
+
+    @Autowired
+    TransactionRecordMapper transactionRecordMapper;
 
     /**
      * /*
@@ -133,10 +144,10 @@ public class AccountServiceImpl implements AccountService {
         for(String cardNum: cardNumList) {
             CardInfoDto cardInfoDto = new CardInfoDto();
             cardInfoDto.setCardType("Debit Card");
-            cardInfoDto.setId(i++);
+            cardInfoDto.setId(i);
             cardInfoDto.setCardNum(cardNum);
             ret.add(cardInfoDto);
-            redis_hm.put(i,cardNum);
+            redis_hm.put(i++,cardNum);
         }
         //get credit card information
         CreditCard creditCard = creditCardFeign.getCreditCard(prcId);
@@ -231,5 +242,119 @@ public class AccountServiceImpl implements AccountService {
 
     public boolean has_credit_card(String prcId) throws Exception {
         return creditCardFeign.hasCreditCard(prcId);
+    }
+
+    /**
+     * A function for transfer money from sender to recipient
+     * @param aesString
+     * @param username
+     * @throws Exception
+     */
+    @Transactional(propagation = Propagation.NESTED)
+    @Override
+    public void transfer(String aesString, String username, String prcId) throws Exception {
+        JsonNode jsonNode = null;
+        String sender_id;
+        String recipientBankAccount;
+        String transferAmountString;
+        try {
+            jsonNode = DecryptUtils.aes_decrypt(aesString);
+            sender_id = UsefulUtils.get_json_string_by_field(jsonNode,"id");
+            recipientBankAccount = UsefulUtils.get_json_string_by_field(jsonNode,"recipient");
+            transferAmountString = UsefulUtils.get_json_string_by_field(jsonNode,"transferAmount");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error while parsing transaction");
+        }
+
+
+        BigDecimal transferAmount = new BigDecimal(transferAmountString);
+        //check if recipient exists
+        CardInfo cardInfo = cardInfoMapper.selectById(recipientBankAccount);
+        if(cardInfo == null) {
+            throw new RuntimeException("Recipient does not exist");
+        }
+
+        //check if sender bank account id still exists in Redis
+        Object redisResponse = redisTemplate.opsForValue().get(UsefulUtils._get_redis_bank_account_key(Integer.parseInt(sender_id),username));
+        if(redisResponse == null) {
+            throw new RuntimeException("Time out, please try again");
+        }
+        String senderBankAccount = redisResponse.toString();
+
+        //insert into transaction record
+        TransactionRecord transactionRecord = new TransactionRecord();
+        transactionRecord.setTransactionType("Transfer");
+        transactionRecord.setTransactionDate(LocalDate.now());
+        transactionRecord.setEncodedTransaction(aesString);
+        transactionRecord.setTransactionResult("Ongoing");
+        int insert = transactionRecordMapper.insert(transactionRecord);
+        if(insert == 0) {
+            throw new RuntimeException("Error inserting to transaction record, This might due to mysql server problem " +
+                    "please try again later");
+        }
+
+        //finish transferring logic
+        try {
+            _transfer(senderBankAccount, recipientBankAccount, transferAmount);
+            transactionRecord.setTransactionType("Success");
+            transactionRecordMapper.updateById(transactionRecord);
+        } catch (Exception e) {
+            e.printStackTrace();
+            transactionRecord.setTransactionResult(e.getMessage());
+            transactionRecordMapper.updateById(transactionRecord);
+            return;
+        }
+
+        //create a thread to send Email to sender
+        Thread emailThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //send Email to sender
+                    String senderEmail = userNotificationMapper.selectById(prcId).getEmail();
+                    String msg = "You have successfully sent " + transferAmount +
+                            "to bank account:" + recipientBankAccount + "\n" + "Please checkout if you have time";
+                    EmailUtils._send_email(senderEmail, msg, "Regards to your recent transfer from Bank Personal Project");
+                } catch (Exception e) {
+                    System.out.println("Send Email Failure");
+                }
+            }
+        });
+        emailThread.start();
+
+
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void _transfer(String senderBankAccount, String recipientBankAccount, BigDecimal transferAmount) throws Exception {
+        CardInfo senderCard = cardInfoMapper.selectById(senderBankAccount);
+        CardInfo recipientCard = cardInfoMapper.selectById(recipientBankAccount);
+        BigDecimal currSenderBalance = senderCard.getBalance();
+        BigDecimal currRecipientBalance = recipientCard.getBalance();
+
+        //not enough balance
+        if(currSenderBalance.compareTo(transferAmount) == -1) {
+            throw new RuntimeException("User does not have enough balance");
+        }
+
+        senderCard.setBalance(currSenderBalance.subtract(transferAmount));
+        recipientCard.setBalance(currRecipientBalance.add(transferAmount));
+
+        int res = cardInfoMapper.updateById(senderCard);
+        int res2 = cardInfoMapper.updateById(recipientCard);
+        if(res == 0 || res2 == 0) {
+            throw new RuntimeException("Bank Account Update Failure");
+        }
+    }
+
+    @Override
+    public String getBankAccountById(String username, int bank_id) throws Exception {
+        String redis_key = UsefulUtils._get_redis_bank_account_key(bank_id,username);
+        Object res = redisTemplate.opsForValue().get(redis_key);
+        if(res == null) {
+            throw new RuntimeException("Please try again later");
+        }
+        return res.toString();
     }
 }

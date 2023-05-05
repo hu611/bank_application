@@ -3,6 +3,10 @@ package com.base.util;
 import java.io.File;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.mail.*;
 import javax.mail.internet.*;
 
@@ -21,6 +25,7 @@ public class EmailUtils{
         EmailDto emailDto = objectMapper.readValue(file,EmailDto.class);
         String from= emailDto.getGmail();
         String password = emailDto.getPassword();
+
         //get Session
         Session session = Session.getDefaultInstance(props,
                 new javax.mail.Authenticator() {

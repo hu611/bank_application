@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import CryptoJS from 'crypto-js'
-import { useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import '../axios_interceptor'
-import { storage_url } from '../constants'
+import { frontend_url, storage_url } from '../constants'
 import Header from '../Utils/header'
 import './style.scss'
 
@@ -15,12 +15,37 @@ function DepositForm () {
   const [confirmcode, setConfirmcode] = useState(0)
   const [cardId, setCardId] = useState(0)
   const { search } = useLocation()
+  const navigate = useNavigate()
   const queryParams = new URLSearchParams(search)
+  const location = useLocation()
+
+  const bank_account_request = async (card_id) => {
+
+    try {
+      const response = await axios.get(storage_url + "/account/getBankAccountById?Id=" + card_id)
+      if (response.data.code === '-1') {
+        alert("Something goes wrong Please log in again")
+      } else {
+        const res = response.data.result
+        setAccountNumber(res)
+        console.log(res)
+
+      }
+    } catch (error) {
+      alert("Something goes wrong Please log in again")
+    }
+  }
 
   useEffect(() => {
 
-    setAccountNumber(queryParams.get('cardNum'))
-    console.log(accountNumber)
+
+
+    const referer = document.referrer
+    console.log(referer)
+    if (referer === null || referer !== frontend_url + "/cardInfo") {
+      navigate('/')
+    }
+    bank_account_request(queryParams.get("cardId"))
     setCardId(queryParams.get("cardId"))
     if (count === 0) {
       return

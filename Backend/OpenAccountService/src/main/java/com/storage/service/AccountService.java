@@ -14,4 +14,8 @@ public interface AccountService {
     public boolean checkConfirmCode(String prcId, String confirmcode) throws Exception;
 
     public List<CardInfoDto> getCardInfo(String prcId, String username) throws Exception;
+
+    public void transfer(String aesString, String username, String prcId) throws Exception;
+
+    public String getBankAccountById(String username, int bank_id) throws Exception;
 }

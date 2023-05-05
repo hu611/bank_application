@@ -35,4 +35,6 @@ public class TransactionRecord implements Serializable {
 
     private String transactionType;
 
+    private String transactionResult;
+
 }

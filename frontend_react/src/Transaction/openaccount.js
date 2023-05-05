@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Header from '../Utils/header'
 import '../axios_interceptor'
 import axios from 'axios'
+import './style.scss'
 import { storage_url } from '../constants'
 
 function BankAccountForm () {
@@ -35,7 +36,7 @@ function BankAccountForm () {
     <div>
       <Header></Header>
 
-      <div>
+      <div className='align_center'>
         <label htmlFor="creditType">Credit Type:</label>
         <select id="creditType" name="creditType" value={creditType} onChange={handleCreditTypeChange}>
           <option value="0">Debit Card</option>
@@ -43,12 +44,12 @@ function BankAccountForm () {
         </select>
       </div>
       <p>
-        <label>
+        <label className='align_center'>
           <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
           我已经阅读并同意了开户协议
         </label>
       </p>
-      <button disabled={!isChecked} onClick={handleSubmit}>
+      <button disabled={!isChecked} onClick={handleSubmit} className='align_center'>
         确认同意开户
       </button>
     </div>

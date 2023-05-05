@@ -1,5 +1,6 @@
 package com.storage.service.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Random;
@@ -28,6 +29,24 @@ public class UsefulUtils {
 
     public static String remove_first_and_last_char(String string) {
         return string.substring(1,string.length()-1);
+    }
+
+    /**
+     * Get json value string by its field name.
+     * @param jsonNode
+     * @param fieldName
+     * @return null if json node does not have the field.
+     * @throws Exception
+     */
+    public static String get_json_string_by_field(JsonNode jsonNode, String fieldName) throws Exception{
+        Object ret = jsonNode.get(fieldName);
+
+        //json does not have the field
+        if(ret == null) {
+            throw new RuntimeException("Json does not have " + fieldName);
+        }
+
+        return remove_first_and_last_char(ret.toString());
     }
 
 }
