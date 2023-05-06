@@ -51,7 +51,7 @@ function BankCardsInfo () {
               <p>银行卡类型：{card.cardType}</p>
               <div>
                 <a href={'/deposit?cardId=' + card.id}>Deposit</a>
-                <a href={'/login?redirect=/transfer&cardNum=' + card.cardNumber + "&cardId=" + card.id} style={{ marginLeft: '0.5em' }}>Transfer</a>
+                <a href={'/login?redirect=/transfer?cardId=' + card.id} style={{ marginLeft: '0.5em' }}>Transfer</a>
               </div>
 
             </div>

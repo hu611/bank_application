@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.credit.mapper.LateFeeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.base.pojo.LateFee">
+        <id column="late_fee_id" property="lateFeeId" />
+        <result column="prc_id" property="prcId" />
+        <result column="late_date" property="lateDate" />
+        <result column="late_fee_amount" property="lateFeeAmount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        late_fee_id, prc_id, late_date, late_fee_amount
+    </sql>
+
+</mapper>

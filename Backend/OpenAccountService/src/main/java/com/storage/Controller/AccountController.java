@@ -9,6 +9,7 @@ import com.storage.Constants;
 import com.storage.Dto.CardInfoDto;
 import com.storage.Dto.ConfirmMsgDto;
 import com.storage.Dto.ProduceMessageDto;
+import com.storage.Dto.TransactionDto;
 import com.storage.service.AccountService;
 import com.storage.service.feign.KafkaFeign;
 import com.storage.service.utils.UsefulUtils;
@@ -148,10 +149,10 @@ public class AccountController {
 
     @PostMapping("/transfer")
     @ResponseBody
-    public RestResponse transfer(@RequestBody String aes_string) {
+    public RestResponse transfer(@RequestBody TransactionDto transactionDto) {
         String[]userInfo = get_token_user();
         try {
-            accountService.transfer(aes_string, userInfo[0],userInfo[1]);
+            accountService.transfer(transactionDto.getTransaction(), userInfo[0],userInfo[1]);
         } catch (Exception e) {
             e.printStackTrace();
             return RestResponse.validfail(e.getMessage());

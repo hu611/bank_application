@@ -25,4 +25,8 @@
         select card_no from card_info where prc_id = #{param1}
     </select>
 
+    <select id="selectCardByCardIdForUpdate" resultMap="BaseResultMap">
+        select * from card_info where card_no = #{cardId} for update
+    </select>
+
 </mapper>

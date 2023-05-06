@@ -81,4 +81,9 @@ class CreditCardServiceApplicationTests {
 
     }
 
+    @Test
+    void generate_monthly_report() {
+        cronSchedulerService.generate_monthly_checkout();
+    }
+
 }

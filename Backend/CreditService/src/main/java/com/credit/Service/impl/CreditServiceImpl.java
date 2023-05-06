@@ -40,23 +40,32 @@ public class CreditServiceImpl implements CreditService {
 
     /**
      * 获得最低还款额
-     * @param prcId
-     * @return
-     * @throws Exception
+     * @param CreditCard
+     * @return BigDecimal: 0.信用额度内消费金额×10% 1.预借现金交易金额×100% 2.前期最低还款额未还部分
+     * 3.所有费用和利息×100% 4.最新的lowest payback amount
      */
     @Override
-    public BigDecimal getLowestPayBackAmount(String prcId) throws Exception {
-        CreditCard creditCard = creditCardMapper.getCreditCardByPrcId(prcId);
+    public BigDecimal[] getLowestPayBackAmount(CreditCard creditCard) {
+        BigDecimal[] ret = new BigDecimal[5];
         BigDecimal res = new BigDecimal(0);
         //信用额度内消费金额×10%
-        res = res.add(creditCard.getBalance().multiply(new BigDecimal(0.1)));
+        BigDecimal balance_rate = creditCard.getBalance().multiply(new BigDecimal(0.1));
+        ret[0] = balance_rate;
+        res = res.add(balance_rate);
         //预借现金交易金额×100%
-        res = res.add(creditCard.getCashAdvance());
+        BigDecimal cashAdvance_rate = creditCard.getCashAdvance();
+        ret[1] = cashAdvance_rate;
+        res = res.add(cashAdvance_rate);
         //前期最低还款额未还部分
-        res = res.add(creditCard.getUnpaidMinRepayment());
+        BigDecimal UnpaidMinRepayment_rate = creditCard.getUnpaidMinRepayment();
+        ret[2] = UnpaidMinRepayment_rate;
+        res = res.add(UnpaidMinRepayment_rate);
         //所有费用和利息×100%
-        res = res.add(creditCard.getInterestAmount());
-        return res;
+        BigDecimal interestAmount_rate = creditCard.getInterestAmount();
+        res = res.add(interestAmount_rate);
+        ret[3] = interestAmount_rate;
+        ret[4] = res;
+        return ret;
     }
 
     /**

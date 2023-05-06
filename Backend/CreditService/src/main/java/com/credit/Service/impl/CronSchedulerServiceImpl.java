@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.pojo.CreditCard;
 import com.base.pojo.CreditCardBill;
 import com.base.pojo.DailyInterestAmountRecord;
+import com.base.util.EmailUtils;
 import com.credit.Constants;
 import com.credit.Service.AuditCreditService;
+import com.credit.Service.CreditService;
 import com.credit.Service.CronSchedulerService;
 import com.credit.Service.feign.KafkaFeign;
 import com.credit.Utils.UsefulFunctions;
@@ -24,6 +26,10 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CronSchedulerServiceImpl implements CronSchedulerService{
@@ -41,11 +47,15 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
     KafkaFeign kafkaFeign;
 
     @Autowired
+    CreditService creditService;
+
+    @Autowired
     AuditCreditService auditCreditService;
 
 
     /**每天0点0小时0分开始结算今天
-     *
+     *错误想法：这部分可以优化，让数据库分开存储这个周期欠的钱和前面周期欠的钱。
+     * 错误原因：每个账单的日期都不一样，如果在20号的时候，需要计算账单日期与当前日期经过的天数
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -53,7 +63,6 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
     public void add_interest_amount() {
         System.out.println("=========Adding daily interest amount=========");
         LambdaQueryWrapper<CreditCardBill> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-
         //get not paid bill
         lambdaQueryWrapper.eq(CreditCardBill::getPaid,0);
         List<CreditCardBill> creditCardBills = creditCardBillMapper.selectList(lambdaQueryWrapper);
@@ -87,8 +96,12 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
             creditCard.setInterestAmount(creditCard.getInterestAmount().add(added_interest));
             creditCardMapper.updateById(creditCard);
         }
+        //late fee
     }
 
+    /**
+     * 每20分钟处理来自kafka的消息队列，负责银行开信用卡
+     */
     @Scheduled(cron = "0 0 */20 * * ?")
     @Override
     public void create_bank_account() {
@@ -120,6 +133,51 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
 
         auditCreditService.saveBatch(auditCreditList);
         //insert completed
+
+    }
+
+    /**
+     * 每个月1号触发这个，让他生成月付款报告
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Override
+    public void generate_monthly_checkout() {
+        LambdaQueryWrapper<CreditCard> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        List<CreditCard> creditCardList = creditCardMapper.selectList(lambdaQueryWrapper);
+
+        //create a thread pool to send Email
+        ExecutorService emailThreadPool = new ThreadPoolExecutor(10, 12, 2
+                , TimeUnit.MINUTES, new SynchronousQueue<Runnable>(), new ThreadPoolExecutor.CallerRunsPolicy());
+
+        for(CreditCard creditCard: creditCardList){
+            BigDecimal[] res = creditService.getLowestPayBackAmount(creditCard);
+            creditCard.setLastBillDate(LocalDate.now());
+            creditCard.setUnpaidMinRepayment(res[4]);
+            creditCardMapper.updateById(creditCard);
+
+            emailThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //todo ask for account service for user email
+                    String email = "AustinHu0802@gmail.com";
+                    String report = "Your monthly report for " + LocalDate.now();
+                    report = report + "\n 信用额度内消费金额×10%: " + res[0].toString().substring(0,5);
+                    report = report + "\n 预借现金交易金额×100%: " + res[1].toString().substring(0,5);
+                    report = report + "\n 前期最低还款额未还部分 " + res[2].toString().substring(0,5);
+                    report = report + "\n 所有费用和利息×100%: " + res[3].toString().substring(0,5);
+                    report = report + "\n 总共最低交的金额 " + res[4].toString().substring(0,5);
+                    try {
+                        EmailUtils._send_email(email, report, "Your monthly report");
+                        System.out.println("Send report to " + email + " is successful");
+                    } catch (Exception e) {
+                        System.out.println(email + "sent failure");
+                    }
+                }
+            });
+
+
+        }
 
     }
 

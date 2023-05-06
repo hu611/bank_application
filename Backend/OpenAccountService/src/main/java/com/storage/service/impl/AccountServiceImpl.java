@@ -254,13 +254,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void transfer(String aesString, String username, String prcId) throws Exception {
         JsonNode jsonNode = null;
-        String sender_id;
+        String senderBankAccount;
         String recipientBankAccount;
         String transferAmountString;
         try {
             jsonNode = DecryptUtils.aes_decrypt(aesString);
-            sender_id = UsefulUtils.get_json_string_by_field(jsonNode,"id");
-            recipientBankAccount = UsefulUtils.get_json_string_by_field(jsonNode,"recipient");
+            senderBankAccount = UsefulUtils.get_json_string_by_field(jsonNode,"senderBankAccount");
+            recipientBankAccount = UsefulUtils.get_json_string_by_field(jsonNode,"recipientBankAccount");
             transferAmountString = UsefulUtils.get_json_string_by_field(jsonNode,"transferAmount");
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,13 +274,6 @@ public class AccountServiceImpl implements AccountService {
         if(cardInfo == null) {
             throw new RuntimeException("Recipient does not exist");
         }
-
-        //check if sender bank account id still exists in Redis
-        Object redisResponse = redisTemplate.opsForValue().get(UsefulUtils._get_redis_bank_account_key(Integer.parseInt(sender_id),username));
-        if(redisResponse == null) {
-            throw new RuntimeException("Time out, please try again");
-        }
-        String senderBankAccount = redisResponse.toString();
 
         //insert into transaction record
         TransactionRecord transactionRecord = new TransactionRecord();
@@ -305,7 +298,6 @@ public class AccountServiceImpl implements AccountService {
             transactionRecordMapper.updateById(transactionRecord);
             return;
         }
-
         //create a thread to send Email to sender
         Thread emailThread = new Thread(new Runnable() {
             @Override
@@ -328,8 +320,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void _transfer(String senderBankAccount, String recipientBankAccount, BigDecimal transferAmount) throws Exception {
-        CardInfo senderCard = cardInfoMapper.selectById(senderBankAccount);
-        CardInfo recipientCard = cardInfoMapper.selectById(recipientBankAccount);
+
+        CardInfo senderCard = cardInfoMapper.selectCardByCardIdForUpdate(senderBankAccount);
+        CardInfo recipientCard = cardInfoMapper.selectCardByCardIdForUpdate(recipientBankAccount);
         BigDecimal currSenderBalance = senderCard.getBalance();
         BigDecimal currRecipientBalance = recipientCard.getBalance();
 

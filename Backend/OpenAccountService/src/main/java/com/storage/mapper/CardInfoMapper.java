@@ -21,4 +21,6 @@ public interface CardInfoMapper extends BaseMapper<CardInfo> {
     public int count_card_no_by_prcId(Map<String, Object> map);
 
     public List<String> getCardByPrcId(String prcId);
+
+    public CardInfo selectCardByCardIdForUpdate(String cardId);
 }
