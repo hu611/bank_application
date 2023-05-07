@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -58,9 +59,10 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
      * 错误原因：每个账单的日期都不一样，如果在20号的时候，需要计算账单日期与当前日期经过的天数
      */
     @Scheduled(cron = "0 0 0 * * ?")
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     @Override
     public void add_interest_amount() {
+        Constants.daily_interest_calculating = true;
         System.out.println("=========Adding daily interest amount=========");
         LambdaQueryWrapper<CreditCardBill> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         //get not paid bill
@@ -91,13 +93,16 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
             dailyInterestAmountRecord.setPrcId(creditCardBill.getPrcId());
             dailyInterestAmountRecordMapper.add_record(dailyInterestAmountRecord);
 
-            //更新信用卡
-            CreditCard creditCard = creditCardMapper.getCreditCardByPrcId(creditCardBill.getPrcId());
-            creditCard.setInterestAmount(creditCard.getInterestAmount().add(added_interest));
-            creditCardMapper.updateById(creditCard);
+            //update credit card interest amount
+            creditCardMapper.updateInterest(added_interest, creditCardBill.getPrcId());
         }
         //late fee
+
+
+        Constants.daily_interest_calculating = false;
+
     }
+
 
     /**
      * 每20分钟处理来自kafka的消息队列，负责银行开信用卡
@@ -143,6 +148,9 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @Override
     public void generate_monthly_checkout() {
+        LocalDate current_time = LocalDate.now();
+
+        Constants.month_checkout_generating = false;
         LambdaQueryWrapper<CreditCard> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<CreditCard> creditCardList = creditCardMapper.selectList(lambdaQueryWrapper);
 
@@ -153,6 +161,14 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
         for(CreditCard creditCard: creditCardList){
             BigDecimal[] res = creditService.getLowestPayBackAmount(creditCard);
             creditCard.setLastBillDate(LocalDate.now());
+
+            BigDecimal new_bill_amount = res[4].subtract(res[2]);
+
+            CreditCardBill creditCardBill = generateCreditCardBill(current_time, new_bill_amount
+                    , creditCard.getPrcId());
+            creditCardBillMapper.insert(creditCardBill);
+
+
             creditCard.setUnpaidMinRepayment(res[4]);
             creditCardMapper.updateById(creditCard);
 
@@ -175,10 +191,20 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
                     }
                 }
             });
-
-
         }
+        Constants.month_checkout_generating = false;
+    }
 
+    public CreditCardBill generateCreditCardBill(LocalDate currentTime,
+                                                 BigDecimal new_bill_amount,
+                                                 String prcId) {
+        CreditCardBill creditCardBill = new CreditCardBill();
+        creditCardBill.setBillName( currentTime + " Min Repayment Bill");
+        creditCardBill.setBillTotal(new_bill_amount);
+        creditCardBill.setPrcId(prcId);
+        creditCardBill.setOweAmount(new_bill_amount);
+        creditCardBill.setOweDate(currentTime);
+        creditCardBill.setPaid(0);
     }
 
 }

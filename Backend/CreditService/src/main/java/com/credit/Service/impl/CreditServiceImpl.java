@@ -48,18 +48,22 @@ public class CreditServiceImpl implements CreditService {
     public BigDecimal[] getLowestPayBackAmount(CreditCard creditCard) {
         BigDecimal[] ret = new BigDecimal[5];
         BigDecimal res = new BigDecimal(0);
+
         //信用额度内消费金额×10%
         BigDecimal balance_rate = creditCard.getBalance().multiply(new BigDecimal(0.1));
         ret[0] = balance_rate;
         res = res.add(balance_rate);
+
         //预借现金交易金额×100%
         BigDecimal cashAdvance_rate = creditCard.getCashAdvance();
         ret[1] = cashAdvance_rate;
         res = res.add(cashAdvance_rate);
+
         //前期最低还款额未还部分
         BigDecimal UnpaidMinRepayment_rate = creditCard.getUnpaidMinRepayment();
         ret[2] = UnpaidMinRepayment_rate;
         res = res.add(UnpaidMinRepayment_rate);
+
         //所有费用和利息×100%
         BigDecimal interestAmount_rate = creditCard.getInterestAmount();
         res = res.add(interestAmount_rate);

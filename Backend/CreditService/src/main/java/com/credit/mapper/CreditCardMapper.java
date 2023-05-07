@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.base.pojo.CreditCard;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -18,4 +19,6 @@ import java.util.List;
 @Mapper
 public interface CreditCardMapper extends BaseMapper<CreditCard> {
     CreditCard getCreditCardByPrcId(String prcId);
+
+    int updateInterest(BigDecimal interest, String prcId);
 }

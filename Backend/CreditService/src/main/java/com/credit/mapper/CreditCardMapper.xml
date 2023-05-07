@@ -17,11 +17,15 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        card_no, prc_id, opening_date, balance, unpaid_min_repayment, cash_advance, quota
+        card_no, prc_id, opening_date, balance, unpaid_min_repayment, interest_amount, cash_advance, quota
     </sql>
 
     <select id="getCreditCardByPrcId" resultMap="BaseResultMap">
         select * from credit_card where prc_id = #{prcId}
     </select>
+
+    <update id="updateInterest">
+        update credit_card set interest_amount = interest_amount + #{param1} where prc_id = #{param2}
+    </update>
 
 </mapper>
