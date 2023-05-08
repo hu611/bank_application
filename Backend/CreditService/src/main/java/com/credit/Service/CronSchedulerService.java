@@ -7,4 +7,6 @@ public interface CronSchedulerService {
     public void create_bank_account();
 
     public void generate_monthly_checkout();
+
+    public void generate_late_fee();
 }

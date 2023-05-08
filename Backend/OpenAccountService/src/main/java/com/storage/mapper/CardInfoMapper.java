@@ -23,4 +23,5 @@ public interface CardInfoMapper extends BaseMapper<CardInfo> {
     public List<String> getCardByPrcId(String prcId);
 
     public CardInfo selectCardByCardIdForUpdate(String cardId);
+
 }

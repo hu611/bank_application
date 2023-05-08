@@ -11,6 +11,8 @@ create table credit_card(
   quota DECIMAL(18,6) not null,
   pin_num varchar(4) not null,
   last_bill_date date not null,
+  late_fee DECIMAL(18,6) NOT null COMMENT '滞纳金',
+  version int not null default 0 COMMENT '乐观锁',
   PRIMARY KEY(card_no),
   INDEX idx_prc_id (prc_id)
 );

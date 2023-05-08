@@ -50,4 +50,10 @@ public class CreditCard implements Serializable {
 
     private LocalDate lastBillDate;
 
+    @ApiModelProperty("乐观锁")
+    private int version;
+
+    @ApiModelProperty("滞纳金")
+    private BigDecimal lateFee;
+
 }

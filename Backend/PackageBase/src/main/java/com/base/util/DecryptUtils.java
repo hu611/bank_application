@@ -19,4 +19,14 @@ public class DecryptUtils {
         byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(msg));
         return JsonUtils._string_to_json(new String(decrypted));
     }
+
+    public static String aes_encrypt(JsonNode jsonNode) throws Exception {
+        String msg = jsonNode.toString();
+        SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes("UTF-8"), "AES");
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes("UTF-8"));
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
+        byte[] encrypted = cipher.doFinal(msg.getBytes("UTF-8"));
+        return Base64.getEncoder().encodeToString(encrypted);
+    }
 }

@@ -7,17 +7,19 @@
         <id column="card_no" property="cardNo" />
         <result column="prc_id" property="prcId" />
         <result column="opening_date" property="openingDate" />
+        <result column="late_fee" property="lateFee"/>
         <result column="balance" property="balance" />
         <result column="cash_advance" property="cashAdvance" />
         <result column="quota" property="quota" />
         <result column="interest_amount" property="interestAmount"/>
         <result column="unpaid_min_repayment" property="unpaidMinRepayment"/>
         <result column="pin_num" property="pinNum"/>
+        <result column="version" property="version"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        card_no, prc_id, opening_date, balance, unpaid_min_repayment, interest_amount, cash_advance, quota
+        card_no, prc_id, version, late_fee, opening_date, balance, unpaid_min_repayment, interest_amount, cash_advance, quota
     </sql>
 
     <select id="getCreditCardByPrcId" resultMap="BaseResultMap">
@@ -26,6 +28,14 @@
 
     <update id="updateInterest">
         update credit_card set interest_amount = interest_amount + #{param1} where prc_id = #{param2}
+    </update>
+
+    <select id="selectAllUnpaidMinCreditCards" resultMap="BaseResultMap">
+        select * from credit_card where unpaid_min_repayment > 0
+    </select>
+
+    <update id="updateLateFee">
+        update credit_card set late_fee = late_fee + #{param1} where card_no = #{param2}
     </update>
 
 </mapper>

@@ -173,4 +173,11 @@ public class AccountController {
         }
 
     }
+
+    @GetMapping("/getCardDetails")
+    @ResponseBody
+    public String getCardDetails(@RequestParam("Id") String bank_id) {
+        //finish get card details
+        return "";
+    }
 }

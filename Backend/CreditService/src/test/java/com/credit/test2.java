@@ -3,6 +3,7 @@ package com.credit;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.pojo.CreditCardBill;
 import com.base.pojo.DailyInterestAmountRecord;
+import com.credit.Service.CronSchedulerService;
 import com.credit.mapper.CreditCardBillMapper;
 import com.credit.mapper.CreditCardMapper;
 import com.credit.mapper.DailyInterestAmountRecordMapper;
@@ -25,6 +26,9 @@ public class test2 {
 
     @Autowired
     CreditCardMapper creditCardMapper;
+
+    @Autowired
+    CronSchedulerService cronSchedulerService;
 
 
 
@@ -54,5 +58,10 @@ public class test2 {
     public void test_credit_card_mapper() {
         BigDecimal bigDecimal = new BigDecimal("200");
         creditCardMapper.updateInterest(bigDecimal, "320202020203");
+    }
+
+    @Test
+    public void test_late_fee_generation() {
+        cronSchedulerService.generate_late_fee();
     }
 }

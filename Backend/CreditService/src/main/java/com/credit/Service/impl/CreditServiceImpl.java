@@ -60,7 +60,7 @@ public class CreditServiceImpl implements CreditService {
         res = res.add(cashAdvance_rate);
 
         //前期最低还款额未还部分
-        BigDecimal UnpaidMinRepayment_rate = creditCard.getUnpaidMinRepayment();
+        BigDecimal UnpaidMinRepayment_rate = creditCard.getUnpaidMinRepayment().add(creditCard.getUnpaidMinRepayment());
         ret[2] = UnpaidMinRepayment_rate;
         res = res.add(UnpaidMinRepayment_rate);
 

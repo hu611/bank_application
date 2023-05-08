@@ -53,13 +53,18 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
     @Autowired
     AuditCreditService auditCreditService;
 
+    //create a thread pool to send Email
+    ExecutorService emailThreadPool = new ThreadPoolExecutor(10, 12, 2
+            , TimeUnit.MINUTES, new SynchronousQueue<Runnable>(), new ThreadPoolExecutor.CallerRunsPolicy());
+
 
     /**每天0点0小时0分开始结算今天
      *错误想法：这部分可以优化，让数据库分开存储这个周期欠的钱和前面周期欠的钱。
      * 错误原因：每个账单的日期都不一样，如果在20号的时候，需要计算账单日期与当前日期经过的天数
+     * Repeatable Read 可以直接看那个时间的数据快照
      */
     @Scheduled(cron = "0 0 0 * * ?")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {}, isolation = Isolation.REPEATABLE_READ)
     @Override
     public void add_interest_amount() {
         Constants.daily_interest_calculating = true;
@@ -94,13 +99,22 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
             dailyInterestAmountRecordMapper.add_record(dailyInterestAmountRecord);
 
             //update credit card interest amount
-            creditCardMapper.updateInterest(added_interest, creditCardBill.getPrcId());
+            updateInterest(added_interest, creditCardBill.getPrcId());
         }
-        //late fee
-
 
         Constants.daily_interest_calculating = false;
 
+    }
+
+    /**
+     *read uncommitted：这一段不读取数据，所以无所谓，
+     * 为什么要单独拉出来呢？ 因为更新完就直接commit可以快点释放
+     * @param added_interest
+     * @param prcId
+     */
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    public void updateInterest(BigDecimal added_interest, String prcId) {
+        creditCardMapper.updateInterest(added_interest, prcId);
     }
 
 
@@ -148,27 +162,18 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @Override
     public void generate_monthly_checkout() {
+        Constants.month_checkout_generating = true;
+
         LocalDate current_time = LocalDate.now();
 
-        Constants.month_checkout_generating = false;
         LambdaQueryWrapper<CreditCard> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<CreditCard> creditCardList = creditCardMapper.selectList(lambdaQueryWrapper);
 
-        //create a thread pool to send Email
-        ExecutorService emailThreadPool = new ThreadPoolExecutor(10, 12, 2
-                , TimeUnit.MINUTES, new SynchronousQueue<Runnable>(), new ThreadPoolExecutor.CallerRunsPolicy());
+
 
         for(CreditCard creditCard: creditCardList){
             BigDecimal[] res = creditService.getLowestPayBackAmount(creditCard);
             creditCard.setLastBillDate(LocalDate.now());
-
-            BigDecimal new_bill_amount = res[4].subtract(res[2]);
-
-            CreditCardBill creditCardBill = generateCreditCardBill(current_time, new_bill_amount
-                    , creditCard.getPrcId());
-            creditCardBillMapper.insert(creditCardBill);
-
-
             creditCard.setUnpaidMinRepayment(res[4]);
             creditCardMapper.updateById(creditCard);
 
@@ -195,6 +200,37 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
         Constants.month_checkout_generating = false;
     }
 
+    /**
+     * 每月20日计算滞纳金，为什么repeatable read，因为需要保存事务开启的快照
+     */
+    @Scheduled(cron = "0 0 0 20 * ?")
+    @Transactional(rollbackFor = {}, isolation = Isolation.REPEATABLE_READ)
+    @Override
+    public void generate_late_fee() {
+        List<CreditCard> unpaidCreditCardList = creditCardMapper.selectAllUnpaidMinCreditCards();
+        for(CreditCard creditCard: unpaidCreditCardList) {
+            BigDecimal added_late_fee = creditCard.getUnpaidMinRepayment().multiply(new BigDecimal("0.05"));
+            creditCardMapper.updateLateFee(added_late_fee,creditCard.getCardNo());
+
+            //todo replace email with real user Email
+            emailThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //todo ask for account service for user email
+                    String email = "AustinHu0802@gmail.com";
+                    String report = "亲爱的用户，因为您长时间不交信用卡的最低应付金额，所以需要支付额外的滞纳金: "
+                            + added_late_fee.toString().substring(0,5) + "请尽快支付";
+                    try {
+                        EmailUtils._send_email(email, report, "Your monthly report");
+                        System.out.println("Send report to " + email + " is successful");
+                    } catch (Exception e) {
+                        System.out.println(email + "sent failure");
+                    }
+                }
+            });
+        }
+    }
+
     public CreditCardBill generateCreditCardBill(LocalDate currentTime,
                                                  BigDecimal new_bill_amount,
                                                  String prcId) {
@@ -205,6 +241,7 @@ public class CronSchedulerServiceImpl implements CronSchedulerService{
         creditCardBill.setOweAmount(new_bill_amount);
         creditCardBill.setOweDate(currentTime);
         creditCardBill.setPaid(0);
+        return creditCardBill;
     }
 
 }
