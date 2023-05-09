@@ -350,4 +350,19 @@ public class AccountServiceImpl implements AccountService {
         }
         return res.toString();
     }
+
+    @Override
+    public CardInfo getDetailedBankAccountInfo(String bank_id, String[]userInfo) throws Exception {
+        String bankAccount = redisTemplate.opsForValue().
+                get(UsefulUtils._get_redis_bank_account_key(Integer.parseInt(bank_id), userInfo[0])).toString();
+        if(bankAccount == null) {
+            throw new RuntimeException("No cache in redis, Please try again");
+        }
+        CardInfo ret = cardInfoMapper.selectById(bankAccount);
+        if(ret == null) {
+            throw new RuntimeException("No corresponding card inside database. This should not happen.");
+        }
+        return ret;
+
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "CreditService", fallbackFactory = CreditCardFallBackFactory.class)
+@FeignClient(name = "CreditService", fallbackFactory = CreditCardFallBackFactory.class, configuration = AuthConfiguration.class)
 @RequestMapping("/credit")
 public interface CreditCardFeign {
     @RequestMapping("/haveCreditCard")

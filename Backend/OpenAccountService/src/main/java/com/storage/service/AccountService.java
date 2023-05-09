@@ -18,4 +18,6 @@ public interface AccountService {
     public void transfer(String aesString, String username, String prcId) throws Exception;
 
     public String getBankAccountById(String username, int bank_id) throws Exception;
+
+    CardInfo getDetailedBankAccountInfo(String bank_id, String[]userInfo) throws Exception;
 }

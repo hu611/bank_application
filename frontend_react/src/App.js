@@ -10,6 +10,7 @@ import Confirm_Open_Account from './Transaction/confirmaccount'
 import Confirm_Credit_Account from './Transaction/opencreditaccount'
 import BankCardsInfo from './Transaction/displaycardinfo'
 import Transfer from './Transaction/transfer'
+import CardInfoDetailsForm from './Transaction/cardInfoDetails'
 function App () {
   return (
     <Router>
@@ -21,6 +22,7 @@ function App () {
           <Route path='/deposit' element={<DepositForm />}></Route>
           <Route path='/cardInfo' element={<BankCardsInfo />}></Route>
           <Route path='/transfer' element={<Transfer />}></Route>
+          <Route path='/cardInfoDetails' element={<CardInfoDetailsForm />}></Route>
           <Route path='/openAccount' element={<BankAccountForm />}></Route>
           <Route path='/confirmDebit' element={<Confirm_Open_Account />}></Route>
           <Route path='/confirmCredit' element={<Confirm_Credit_Account />}></Route>

@@ -13,4 +13,9 @@ public class JsonUtils {
         //不然就是 比如 amount会变成 "500" 而不是500.
         return json.substring(1,json.length()-1);
     }
+
+    public static JsonNode _object_to_json(Object object) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.valueToTree(object);
+    }
 }

@@ -10,6 +10,7 @@ import com.storage.Dto.CardInfoDto;
 import com.storage.Dto.ConfirmMsgDto;
 import com.storage.Dto.ProduceMessageDto;
 import com.storage.Dto.TransactionDto;
+import com.storage.pojo.CardInfo;
 import com.storage.service.AccountService;
 import com.storage.service.feign.KafkaFeign;
 import com.storage.service.utils.UsefulUtils;
@@ -176,8 +177,23 @@ public class AccountController {
 
     @GetMapping("/getCardDetails")
     @ResponseBody
-    public String getCardDetails(@RequestParam("Id") String bank_id) {
+    public RestResponse getCardDetails(@RequestParam("cardId") String bank_id) {
         //finish get card details
-        return "";
+        String[] userInfo = get_token_user();
+        try {
+            CardInfo cardInfo = accountService.getDetailedBankAccountInfo(bank_id, userInfo);
+            //can't send pin number and prc Id to user as it is extremely sensitive info
+            cardInfo.setPinNum("****");
+            String prcId = cardInfo.getPrcId();
+            cardInfo.setPrcId(prcId.substring(0,6) + "*****" + prcId.substring(10));
+            //convert class to json for encryption purpose
+            JsonNode jsonNode = JsonUtils._object_to_json(cardInfo);
+
+            //encrypt json node
+            String encrypt_msg = DecryptUtils.aes_encrypt(jsonNode);
+            return RestResponse.success(encrypt_msg);
+        } catch (Exception e) {
+            return RestResponse.validfail(e.getMessage());
+        }
     }
 }
