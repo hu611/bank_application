@@ -33,6 +33,9 @@ public class CardInfo implements Serializable {
 
     private LocalDate openingDate;
 
+    //冻结资金
+    private BigDecimal freezeBalance;
+
     private BigDecimal balance;
 
     private String cardType;

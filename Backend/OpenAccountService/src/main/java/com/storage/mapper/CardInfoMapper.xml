@@ -10,11 +10,12 @@
         <result column="balance" property="balance" />
         <result column="card_type" property="cardType" />
         <result column="pin_num" property="pinNum" />
+        <result column="freeze_balance" property="freezeBalance"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        card_no, prc_id, opening_date, balance, card_type, pin_num
+        card_no, prc_id, opening_date, freeze_balance, balance, card_type, pin_num
     </sql>
 
     <select id="count_card_no_by_prcId" resultType="Integer" parameterType="Map">
