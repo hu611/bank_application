@@ -1,6 +1,7 @@
 package com.storage.service.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.storage.Constants;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Random;
@@ -12,6 +13,10 @@ public class UsefulUtils {
 
     public static String _get_redis_bank_account_key(int id, String username) {
         return username + "_bank_account_" + id;
+    }
+
+    public static String _get_redis_debit_plan_key(int id) {
+        return Constants.redis_debit_plan_key + "_" + id;
     }
 
     public static String _generate_random_num(int length) {
