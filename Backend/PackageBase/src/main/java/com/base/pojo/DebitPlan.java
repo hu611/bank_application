@@ -38,8 +38,6 @@ public class DebitPlan implements Serializable {
 
     private Integer durationMonth;
 
-    private Integer durationYear;
-
     private LocalDate startDate;
 
     private LocalDate expireDate;

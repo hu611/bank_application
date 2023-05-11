@@ -20,4 +20,8 @@ public interface AccountService {
     public String getBankAccountById(String username, int bank_id) throws Exception;
 
     CardInfo getDetailedBankAccountInfo(String bank_id, String[]userInfo) throws Exception;
+
+    public void batch_insert_debit_balance_redis(List<CardInfo> cardInfoList);
+
+    void batch_insert_user_cardno_redis(List<CardInfo> cardInfoList);
 }

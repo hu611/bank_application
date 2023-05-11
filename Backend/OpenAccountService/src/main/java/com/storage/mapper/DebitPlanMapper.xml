@@ -10,14 +10,13 @@
         <result column="freeze_amount" property="freezeAmount" />
         <result column="interest_rate" property="interestRate" />
         <result column="duration_month" property="durationMonth" />
-        <result column="duration_year" property="durationYear" />
         <result column="start_date" property="startDate" />
         <result column="expire_date" property="expireDate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        plan_id, plan_title, plan_desc, freeze_amount, interest_rate, duration_month, duration_year, start_date, expire_date
+        plan_id, plan_title, plan_desc, freeze_amount, interest_rate, duration_month, start_date, expire_date
     </sql>
 
     <select id="getAllEffectiveDebitPlan" resultMap="BaseResultMap">

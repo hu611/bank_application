@@ -4,7 +4,6 @@ import com.base.pojo.DebitPlan;
 import com.base.util.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.storage.service.utils.UsefulUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,6 +14,7 @@ import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 
 @Configuration
@@ -66,9 +66,9 @@ public class RedisConfig {
                     debitPlan.setFreezeAmount(JsonUtils.json_to_int(jsonNode, "freezeAmount"));
                     debitPlan.setInterestRate(JsonUtils.json_to_float(jsonNode,"interestRate"));
                     debitPlan.setDurationMonth(JsonUtils.json_to_int(jsonNode, "durationMonth"));
-                    debitPlan.setDurationYear(JsonUtils.json_to_int(jsonNode, "durationYear"));
-                    System.out.println();
-                    return null;
+                    debitPlan.setExpireDate(LocalDate.now());
+                    debitPlan.setStartDate(LocalDate.now());
+                    return debitPlan;
                 } catch (Exception e) {
                     throw new RuntimeException("Error while deserializing");
                 }

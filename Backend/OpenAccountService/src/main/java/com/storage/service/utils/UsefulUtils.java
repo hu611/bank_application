@@ -19,6 +19,14 @@ public class UsefulUtils {
         return Constants.redis_debit_plan_key + "_" + id;
     }
 
+    public static String _get_redis_debit_balance_key(String cardNo) {
+        return "debit_balance_" + cardNo;
+    }
+
+    public static String _get_redis_prcid_bankNo_key(String prcId) {
+        return "prcid_bankNo_" + prcId;
+    }
+
     public static String _generate_random_num(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -51,7 +52,21 @@ public class DebitPlanController implements InitializingBean {
     @GetMapping("/getAllPlans")
     @ResponseBody
     public RestResponse getAllPlans() {
-        redisTemplate.opsForList().range(Constants.redis_debit_plan_key,0,-1);
-        return null;
+        int i = 0;
+        List<DebitPlan> debitPlanList = new ArrayList<>();
+        while (redisTemplate.hasKey(UsefulUtils._get_redis_debit_plan_key(i))) {
+            System.out.println(UsefulUtils._get_redis_debit_plan_key(i));
+            Object object = redisTemplate.opsForValue().get(UsefulUtils._get_redis_debit_plan_key(i));
+            try {
+                DebitPlan debitPlan = (DebitPlan) object;
+                //这里plan id设置成redis的，这样查询直接导向redis就行了，也可以避免用户访问已经过期的借记卡计划
+                debitPlan.setPlanId(i);
+                debitPlanList.add(debitPlan);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while converting redis object to debit plan");
+            }
+            i++;
+        }
+        return RestResponse.success(debitPlanList);
     }
 }

@@ -10,6 +10,8 @@ function Main () {
         <br></br>
         <a href="/openAccount"> 开户</a>
         <br></br>
+        <a href="/debitPlan">借记卡计划</a>
+        <br></br>
       </li>
     </ul>
   </div>)

@@ -1,5 +1,6 @@
 package com.storage.Controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.RestResponse;
 import com.base.util.DecryptUtils;
 import com.base.util.FileUtils;
@@ -10,30 +11,43 @@ import com.storage.Dto.CardInfoDto;
 import com.storage.Dto.ConfirmMsgDto;
 import com.storage.Dto.ProduceMessageDto;
 import com.storage.Dto.TransactionDto;
+import com.storage.mapper.CardInfoMapper;
 import com.storage.pojo.CardInfo;
 import com.storage.service.AccountService;
 import com.storage.service.feign.KafkaFeign;
 import com.storage.service.utils.UsefulUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Controller
 @RequestMapping("/account")
-public class AccountController {
+public class AccountController implements InitializingBean {
 
     @Autowired
     AccountService accountService;
 
     @Autowired
     KafkaFeign kafkaFeign;
+
+    @Autowired
+    CardInfoMapper cardInfoMapper;
+
+    @Override
+    public void afterPropertiesSet() {
+        //select all cards
+        List<CardInfo> cardInfoList = cardInfoMapper.selectList(new LambdaQueryWrapper<>());
+        accountService.batch_insert_debit_balance_redis(cardInfoList);
+        accountService.batch_insert_user_cardno_redis(cardInfoList);
+
+    }
 
     public String[] get_token_user() {
         Object principalObj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

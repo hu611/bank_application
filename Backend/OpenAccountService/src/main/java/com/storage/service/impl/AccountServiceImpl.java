@@ -18,8 +18,10 @@ import com.storage.mapper.UserNotificationMapper;
 import com.storage.service.AccountService;
 import com.storage.service.feign.CreditCardFeign;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.storage.service.utils.UsefulUtils;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -46,6 +48,66 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     TransactionRecordMapper transactionRecordMapper;
+
+    //批量插入借记卡数据进入redis
+    @Override
+    public void batch_insert_debit_balance_redis(List<CardInfo> cardInfoList) {
+        System.out.println("batch insert started");
+        // 获取Redis连接
+        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+        RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
+
+        // 开启管道
+        connection.openPipeline();
+
+        // 执行批量插入操作
+        for (CardInfo cardInfo: cardInfoList) {
+            String key = UsefulUtils._get_redis_debit_balance_key(cardInfo.getCardNo());
+            System.out.println(key);
+            String value = cardInfo.getBalance().toString();
+            // 将命令添加到管道中
+            connection.set(serializer.serialize(key), serializer.serialize(value));
+        }
+
+        // 提交管道命令
+        connection.closePipeline();
+        System.out.println("batch insert ended");
+    }
+
+    @Override
+    public void batch_insert_user_cardno_redis(List<CardInfo> cardInfoList) {
+        HashMap<String, String> hm = new HashMap<>();
+        for(CardInfo cardInfo: cardInfoList) {
+            String card_no = cardInfo.getCardNo();
+            String prc_id = cardInfo.getPrcId();
+            if(hm.containsKey(prc_id)) {
+                String curr = hm.get(prc_id);
+                curr = curr + " " + card_no;
+                hm.put(prc_id, curr);
+            } else {
+                hm.put(prc_id, card_no);
+            }
+        }
+
+        // 获取Redis连接
+        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+        RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
+
+        // 开启管道
+        connection.openPipeline();
+
+        for (Map.Entry<String,String> set: hm.entrySet()) {
+            String key = UsefulUtils._get_redis_prcid_bankNo_key(set.getKey());
+            System.out.println(key);
+            String value = set.getValue();
+            connection.set(serializer.serialize(key),serializer.serialize(value));
+        }
+
+        // 提交管道命令
+        connection.closePipeline();
+        System.out.println("batch insert ended");
+
+    }
 
     /**
      * /*
@@ -200,7 +262,7 @@ public class AccountServiceImpl implements AccountService {
         cardInfo.setPrcId(prcId);
         cardInfo.setCardType("0");
         cardInfoMapper.insert(cardInfo);
-
+        redisTemplate.opsForValue().set(UsefulUtils._get_redis_debit_balance_key(cardInfo.getCardNo()),cardInfo.getBalance());
     }
 
     public String generate_bank_account(String prcId) {
@@ -365,4 +427,5 @@ public class AccountServiceImpl implements AccountService {
         return ret;
 
     }
+
 }
