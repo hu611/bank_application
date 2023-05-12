@@ -1,7 +1,6 @@
 package com.storage.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.BeanUtils;
 import com.base.RestResponse;
 import com.base.pojo.CreditCard;
 import com.base.pojo.TransactionRecord;
@@ -17,7 +16,9 @@ import com.storage.pojo.UserNotification;
 import com.storage.mapper.UserNotificationMapper;
 import com.storage.service.AccountService;
 import com.storage.service.feign.CreditCardFeign;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.storage.service.utils.UsefulUtils;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +43,10 @@ public class AccountServiceImpl implements AccountService {
     RedisTemplate redisTemplate;
 
     @Autowired
+    @Qualifier(value = "ObjectRedisTemplate")
+    RedisTemplate objectRedisTemplate;
+
+    @Autowired
     CardInfoMapper cardInfoMapper;
 
     @Autowired
@@ -49,7 +55,11 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     TransactionRecordMapper transactionRecordMapper;
 
-    //批量插入借记卡数据进入redis
+    /**
+     * 批量插入借记卡数据进入redis
+     * e.g key:debit_balance_622203412900799 value:1000.000000
+     * @param cardInfoList
+     */
     @Override
     public void batch_insert_debit_balance_redis(List<CardInfo> cardInfoList) {
         System.out.println("batch insert started");
@@ -63,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
         // 执行批量插入操作
         for (CardInfo cardInfo: cardInfoList) {
             String key = UsefulUtils._get_redis_debit_balance_key(cardInfo.getCardNo());
-            System.out.println(key);
+            System.out.println("inserting redis debit balance key:" + key);
             String value = cardInfo.getBalance().toString();
             // 将命令添加到管道中
             connection.set(serializer.serialize(key), serializer.serialize(value));
@@ -74,33 +84,27 @@ public class AccountServiceImpl implements AccountService {
         System.out.println("batch insert ended");
     }
 
+    /**
+     * eg: key: prcid_bankNo_320202020203 value:"622203412900799 622203518628839"
+     * @param cardInfoList
+     */
     @Override
     public void batch_insert_user_cardno_redis(List<CardInfo> cardInfoList) {
-        HashMap<String, String> hm = new HashMap<>();
-        for(CardInfo cardInfo: cardInfoList) {
-            String card_no = cardInfo.getCardNo();
-            String prc_id = cardInfo.getPrcId();
-            if(hm.containsKey(prc_id)) {
-                String curr = hm.get(prc_id);
-                curr = curr + " " + card_no;
-                hm.put(prc_id, curr);
-            } else {
-                hm.put(prc_id, card_no);
-            }
-        }
-
         // 获取Redis连接
-        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
-        RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-
-        // 开启管道
+        RedisConnection connection = objectRedisTemplate.getConnectionFactory().getConnection();
+        HashSet<String> hashSet = new HashSet<>();
         connection.openPipeline();
 
-        for (Map.Entry<String,String> set: hm.entrySet()) {
-            String key = UsefulUtils._get_redis_prcid_bankNo_key(set.getKey());
-            System.out.println(key);
-            String value = set.getValue();
-            connection.set(serializer.serialize(key),serializer.serialize(value));
+        for(CardInfo cardInfo: cardInfoList) {
+            CardInfoDto cardInfoDto = new CardInfoDto();
+            BeanUtils.copyProperties(cardInfo,cardInfoDto);
+            String key = UsefulUtils._get_redis_prcid_bankNo_key(cardInfo.getPrcId());
+            if(!hashSet.contains(cardInfo.getPrcId())) {
+                objectRedisTemplate.delete(key);
+                hashSet.add(cardInfo.getPrcId());
+            }
+            objectRedisTemplate.opsForList().leftPush(key,cardInfoDto);
+            System.out.println("prc id:" + key);
         }
 
         // 提交管道命令
@@ -207,7 +211,7 @@ public class AccountServiceImpl implements AccountService {
             CardInfoDto cardInfoDto = new CardInfoDto();
             cardInfoDto.setCardType("Debit Card");
             cardInfoDto.setId(i);
-            cardInfoDto.setCardNum(cardNum);
+            cardInfoDto.setCardNo(cardNum);
             ret.add(cardInfoDto);
             redis_hm.put(i++,cardNum);
         }
@@ -215,7 +219,7 @@ public class AccountServiceImpl implements AccountService {
         CreditCard creditCard = creditCardFeign.getCreditCard(prcId);
         if(creditCard != null) {
             CardInfoDto cardInfoDto = new CardInfoDto();
-            cardInfoDto.setCardNum(creditCard.getCardNo());
+            cardInfoDto.setCardNo(creditCard.getCardNo());
             cardInfoDto.setCardType("Credit Card");
             cardInfoDto.setId(i);
             ret.add(cardInfoDto);
@@ -263,6 +267,7 @@ public class AccountServiceImpl implements AccountService {
         cardInfo.setCardType("0");
         cardInfoMapper.insert(cardInfo);
         redisTemplate.opsForValue().set(UsefulUtils._get_redis_debit_balance_key(cardInfo.getCardNo()),cardInfo.getBalance());
+
     }
 
     public String generate_bank_account(String prcId) {
@@ -330,12 +335,8 @@ public class AccountServiceImpl implements AccountService {
         }
 
 
+
         BigDecimal transferAmount = new BigDecimal(transferAmountString);
-        //check if recipient exists
-        CardInfo cardInfo = cardInfoMapper.selectById(recipientBankAccount);
-        if(cardInfo == null) {
-            throw new RuntimeException("Recipient does not exist");
-        }
 
         //insert into transaction record
         TransactionRecord transactionRecord = new TransactionRecord();
@@ -349,17 +350,47 @@ public class AccountServiceImpl implements AccountService {
                     "please try again later");
         }
 
-        //finish transferring logic
-        try {
-            _transfer(senderBankAccount, recipientBankAccount, transferAmount);
-            transactionRecord.setTransactionType("Success");
-            transactionRecordMapper.updateById(transactionRecord);
-        } catch (Exception e) {
-            e.printStackTrace();
-            transactionRecord.setTransactionResult(e.getMessage());
-            transactionRecordMapper.updateById(transactionRecord);
-            return;
+        String recipientKey = UsefulUtils._get_redis_debit_balance_key(recipientBankAccount);
+        String senderKey = UsefulUtils._get_redis_debit_balance_key(senderBankAccount);
+        System.out.println("recipient key" + recipientKey);
+        if(!redisTemplate.hasKey(recipientKey)) {
+            throw new RuntimeException("Recipient does not exist");
         }
+
+        //设置分布式锁
+        //设置sender的锁，并且在redis实现转账
+        String lock_sender_key = UsefulUtils._get_redis_shared_lock(senderBankAccount);
+        acquire_key(lock_sender_key);
+        BigDecimal sender_amount = new BigDecimal(redisTemplate.opsForValue().get(senderKey).toString());
+        if(sender_amount.compareTo(transferAmount) < 0) {
+            throw new RuntimeException("用户没有足够的转账金额");
+        }
+        redisTemplate.opsForValue().set(senderKey, sender_amount.subtract(transferAmount).toString());
+
+        //设置recipient的锁
+        String lock_recipient_key = UsefulUtils._get_redis_shared_lock(recipientBankAccount);
+        acquire_key(lock_recipient_key);
+        BigDecimal recipient_amount = new BigDecimal(redisTemplate.opsForValue().get(recipientKey).toString());
+        redisTemplate.opsForValue().set(recipientKey, recipient_amount.add(transferAmount).toString());
+
+
+        Thread sqlThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //finish transferring logic
+                try {
+                    _transfer(senderBankAccount, recipientBankAccount, transferAmount);
+                    transactionRecord.setTransactionType("Success");
+                    transactionRecordMapper.updateById(transactionRecord);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    transactionRecord.setTransactionResult(e.getMessage());
+                    transactionRecordMapper.updateById(transactionRecord);
+                    return;
+                }
+            }
+        });
+
         //create a thread to send Email to sender
         Thread emailThread = new Thread(new Runnable() {
             @Override
@@ -375,29 +406,35 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
         });
+        sqlThread.start();
         emailThread.start();
 
 
     }
 
+    public void acquire_key(String key) throws Exception{
+        RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
+        boolean acquired = redisConnection.setNX(key.getBytes(StandardCharsets.UTF_8), new byte[0]);
+        int i = 0;
+        while(!acquired) {
+            i++;
+            acquired = redisConnection.setNX(key.getBytes(StandardCharsets.UTF_8), new byte[0]);
+            if(i > 10) {
+                //retry 10 times
+                throw new RuntimeException("Failed to obtain locks");
+            }
+        }
+
+        redisConnection.pExpire(key.getBytes(),100);
+    }
+
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void _transfer(String senderBankAccount, String recipientBankAccount, BigDecimal transferAmount) throws Exception {
 
-        CardInfo senderCard = cardInfoMapper.selectCardByCardIdForUpdate(senderBankAccount);
-        CardInfo recipientCard = cardInfoMapper.selectCardByCardIdForUpdate(recipientBankAccount);
-        BigDecimal currSenderBalance = senderCard.getBalance();
-        BigDecimal currRecipientBalance = recipientCard.getBalance();
 
-        //not enough balance
-        if(currSenderBalance.compareTo(transferAmount) == -1) {
-            throw new RuntimeException("User does not have enough balance");
-        }
 
-        senderCard.setBalance(currSenderBalance.subtract(transferAmount));
-        recipientCard.setBalance(currRecipientBalance.add(transferAmount));
-
-        int res = cardInfoMapper.updateById(senderCard);
-        int res2 = cardInfoMapper.updateById(recipientCard);
+        int res = cardInfoMapper.updateBalanceByBankNo(transferAmount.toString(), recipientBankAccount);
+        int res2 = cardInfoMapper.updateBalanceByBankNo(transferAmount.multiply(new BigDecimal("-1")).toString(), senderBankAccount);
         if(res == 0 || res2 == 0) {
             throw new RuntimeException("Bank Account Update Failure");
         }

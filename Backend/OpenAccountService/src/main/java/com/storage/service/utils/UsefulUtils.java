@@ -27,6 +27,10 @@ public class UsefulUtils {
         return "prcid_bankNo_" + prcId;
     }
 
+    public static String _get_redis_shared_lock(String key) {
+        return "redis_shared_key_" + key;
+    }
+
     public static String _generate_random_num(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();

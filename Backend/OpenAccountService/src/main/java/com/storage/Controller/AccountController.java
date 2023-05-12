@@ -156,8 +156,8 @@ public class AccountController implements InitializingBean {
 
     public List<CardInfoDto> blurCardNum(List<CardInfoDto> cardInfoDtos) {
         for(CardInfoDto cardInfoDto: cardInfoDtos) {
-            String cardNum = cardInfoDto.getCardNum();
-            cardInfoDto.setCardNum(cardNum.substring(0,6) + "***" + cardNum.substring(13));
+            String cardNum = cardInfoDto.getCardNo();
+            cardInfoDto.setCardNo(cardNum.substring(0,6) + "***" + cardNum.substring(13));
         }
         return cardInfoDtos;
     }

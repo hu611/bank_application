@@ -53,7 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @param encoded_string
      * @throws Exception
      */
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
     public void deposit_money(BigDecimal amount, String username, String prcId,
                               String card_no, String encoded_string) throws Exception {

@@ -24,4 +24,6 @@ public interface CardInfoMapper extends BaseMapper<CardInfo> {
 
     public CardInfo selectCardByCardIdForUpdate(String cardId);
 
+    public int updateBalanceByBankNo(String balance, String bankNo);
+
 }

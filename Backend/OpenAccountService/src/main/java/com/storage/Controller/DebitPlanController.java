@@ -28,7 +28,7 @@ public class DebitPlanController implements InitializingBean {
     DebitPlanService debitPlanService;
 
     @Autowired
-    @Qualifier(value = "DebitPlanRedisTemplate")
+    @Qualifier(value = "ObjectRedisTemplate")
     RedisTemplate redisTemplate;
 
     @Override
