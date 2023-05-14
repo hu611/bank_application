@@ -38,8 +38,7 @@ function CardInfoDetailsForm () {
 
   useEffect(() => {
     setCardId(queryParams.get("cardId"))
-
-    requestCardDetails(cardId)
+    requestCardDetails(queryParams.get("cardId"))
   }, [])
   return (
     <div>

@@ -2,6 +2,7 @@ package com.storage.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.pojo.TransactionRecord;
+import com.storage.Dto.CardInfoDto;
 import com.storage.pojo.UserNotification;
 import com.base.util.EmailUtils;
 import com.storage.mapper.BankUserMapper;
@@ -10,8 +11,11 @@ import com.storage.mapper.TransactionRecordMapper;
 import com.storage.mapper.UserNotificationMapper;
 import com.storage.pojo.CardInfo;
 import com.storage.service.TransactionService;
+import com.storage.service.utils.RedisUtils;
+import com.storage.service.utils.UsefulUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -44,6 +48,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     UserNotificationMapper userNotificationMapper;
 
+    @Autowired
+    @Qualifier(value = "ObjectRedisTemplate")
+    RedisTemplate objectRedisTemplate;
+
     /**
      * @description store money into the account
      * @param amount
@@ -58,33 +66,36 @@ public class TransactionServiceImpl implements TransactionService {
     public void deposit_money(BigDecimal amount, String username, String prcId,
                               String card_no, String encoded_string) throws Exception {
         //check if user has this account number
-        CardInfo cardInfo = _prcId_has_card_no(prcId, card_no);
+        Boolean containsCard = _prcId_has_card_no(prcId, card_no);
         TransactionRecord transactionRecord = new TransactionRecord();
         transactionRecord.setTransactionDate(LocalDate.now());
         transactionRecord.setEncodedTransaction(encoded_string);
-        if(cardInfo == null) {
+        if(!containsCard) {
             transactionRecord.setTransactionType("Failure");
             transactionRecordMapper.insert(transactionRecord);
             throw new RuntimeException("The person does not have association with this card number");
         }
         //deposit money into account
-        cardInfo.setBalance(cardInfo.getBalance().add(amount));
-        int insert = cardInfoMapper.updateById(cardInfo);
-        if(insert == 0) {
-            //insertion failure
-            transactionRecord.setTransactionType("Failure");
-            transactionRecordMapper.insert(transactionRecord);
-            throw new RuntimeException("The person does not have association with this card number");
-        }
-        //transaction complete, put transaction record into database
-        //send Email
-        UserNotification userNotification = userNotificationMapper.selectById(prcId);
-        String emailMessage = "You have successfully deposited " + amount + " money";
+
+        String lockKey = UsefulUtils._get_redis_shared_lock(card_no);
+        RedisUtils.redis_update_balance(redisTemplate,lockKey,card_no,amount);
+
+        //insert into sql database
+        Thread sqlThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                cardInfoMapper.updateBalanceByBankNo(amount.toString(), card_no);
+            }
+        });
 
         //create a new thread for sending email
         Thread emailthread = new Thread(new Runnable() {
             @Override
             public void run() {
+                //transaction complete, put transaction record into database
+                //send Email
+                UserNotification userNotification = userNotificationMapper.selectById(prcId);
+                String emailMessage = "You have successfully deposited " + amount + " money";
                 try {
                     EmailUtils._send_email(userNotification.getEmail(), emailMessage, "Personal Bank Project Notification");
                 } catch (Exception e) {
@@ -93,6 +104,8 @@ public class TransactionServiceImpl implements TransactionService {
                 }
             }
         });
+
+        sqlThread.start();
         emailthread.start();
 
         transactionRecord.setTransactionType("Success");
@@ -100,16 +113,17 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-    public CardInfo _prcId_has_card_no(String prcId, String card_no) {
-        LambdaQueryWrapper<CardInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(CardInfo::getPrcId, prcId);
-        List<CardInfo> cardInfoList = cardInfoMapper.selectList(lambdaQueryWrapper);
-        for(CardInfo cardInfo: cardInfoList) {
+
+
+    public Boolean _prcId_has_card_no(String prcId, String card_no) {
+        String redisKey = UsefulUtils._get_redis_prcid_bankNo_key(prcId);
+        List<CardInfoDto> cardInfoList = objectRedisTemplate.opsForList().range(redisKey,0,-1);
+        for(CardInfoDto cardInfo: cardInfoList) {
             if(cardInfo.getCardNo().equals(card_no)) {
-                return cardInfo;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     @Override

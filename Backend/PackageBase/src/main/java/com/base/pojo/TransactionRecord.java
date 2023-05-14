@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * <p>
@@ -35,6 +36,7 @@ public class TransactionRecord implements Serializable {
 
     private String transactionType;
 
+    @Value("Ongoing")
     private String transactionResult;
 
 }

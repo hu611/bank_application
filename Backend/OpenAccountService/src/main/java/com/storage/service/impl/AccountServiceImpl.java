@@ -16,6 +16,7 @@ import com.storage.pojo.UserNotification;
 import com.storage.mapper.UserNotificationMapper;
 import com.storage.service.AccountService;
 import com.storage.service.feign.CreditCardFeign;
+import com.storage.service.utils.RedisUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -205,15 +206,13 @@ public class AccountServiceImpl implements AccountService {
         List<CardInfoDto> ret =  new ArrayList<>();
         HashMap<Integer, String> redis_hm = new HashMap<>();
         //get Debit card information
-        List<String> cardNumList = cardInfoMapper.getCardByPrcId(prcId);
+        String redisKey = UsefulUtils._get_redis_prcid_bankNo_key(prcId);
+        ret = objectRedisTemplate.opsForList().range(redisKey, 0, -1);
         int i = 0;
-        for(String cardNum: cardNumList) {
-            CardInfoDto cardInfoDto = new CardInfoDto();
-            cardInfoDto.setCardType("Debit Card");
-            cardInfoDto.setId(i);
-            cardInfoDto.setCardNo(cardNum);
-            ret.add(cardInfoDto);
-            redis_hm.put(i++,cardNum);
+        for(CardInfoDto cardInfoDto: ret) {
+            redis_hm.put(i,cardInfoDto.getCardNo());
+            cardInfoDto.setId(i++);
+
         }
         //get credit card information
         CreditCard creditCard = creditCardFeign.getCreditCard(prcId);
@@ -343,7 +342,6 @@ public class AccountServiceImpl implements AccountService {
         transactionRecord.setTransactionType("Transfer");
         transactionRecord.setTransactionDate(LocalDate.now());
         transactionRecord.setEncodedTransaction(aesString);
-        transactionRecord.setTransactionResult("Ongoing");
         int insert = transactionRecordMapper.insert(transactionRecord);
         if(insert == 0) {
             throw new RuntimeException("Error inserting to transaction record, This might due to mysql server problem " +
@@ -360,7 +358,7 @@ public class AccountServiceImpl implements AccountService {
         //设置分布式锁
         //设置sender的锁，并且在redis实现转账
         String lock_sender_key = UsefulUtils._get_redis_shared_lock(senderBankAccount);
-        acquire_key(lock_sender_key);
+        acquire_key(redisTemplate, lock_sender_key);
         BigDecimal sender_amount = new BigDecimal(redisTemplate.opsForValue().get(senderKey).toString());
         if(sender_amount.compareTo(transferAmount) < 0) {
             throw new RuntimeException("用户没有足够的转账金额");
@@ -369,9 +367,7 @@ public class AccountServiceImpl implements AccountService {
 
         //设置recipient的锁
         String lock_recipient_key = UsefulUtils._get_redis_shared_lock(recipientBankAccount);
-        acquire_key(lock_recipient_key);
-        BigDecimal recipient_amount = new BigDecimal(redisTemplate.opsForValue().get(recipientKey).toString());
-        redisTemplate.opsForValue().set(recipientKey, recipient_amount.add(transferAmount).toString());
+        RedisUtils.redis_update_balance(redisTemplate,lock_recipient_key,recipientBankAccount, transferAmount);
 
 
         Thread sqlThread = new Thread(new Runnable() {
@@ -412,7 +408,7 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-    public void acquire_key(String key) throws Exception{
+    public static void acquire_key(RedisTemplate redisTemplate, String key) throws Exception{
         RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
         boolean acquired = redisConnection.setNX(key.getBytes(StandardCharsets.UTF_8), new byte[0]);
         int i = 0;

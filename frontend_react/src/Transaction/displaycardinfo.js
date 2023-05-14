@@ -17,7 +17,7 @@ function BankCardsInfo () {
       } else {
         const res = response.data.result
         for (let i = 0; i < res.length; i++) {
-          const new_card = new Card(res[i].cardNum, res[i].cardType, res[i].id)
+          const new_card = new Card(res[i].cardNo, res[i].cardType, res[i].id)
           setCards(prevCards => [...prevCards, new_card])
 
 
