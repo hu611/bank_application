@@ -18,6 +18,7 @@
         <option value="$PROJECT_DIR$/CreditService/pom.xml" />
         <option value="$PROJECT_DIR$/OpenAccountService/pom.xml" />
         <option value="$PROJECT_DIR$/GatewayService/pom.xml" />
+        <option value="$PROJECT_DIR$/ApiService/pom.xml" />
       </list>
     </option>
   </component>

@@ -10,6 +10,7 @@
           <entry name="$PROJECT_DIR$/../../../Framework/apache-maven-3.8.4/maven-repo/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
         </processorPath>
         <module name="KafkaService" />
+        <module name="ApiService" />
         <module name="Auth_Model" />
         <module name="PackageBase" />
         <module name="CreditService" />
@@ -21,6 +22,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ApiService" target="1.8" />
       <module name="Auth" target="1.8" />
       <module name="Auth (1)" target="1.8" />
       <module name="Auth_Api" target="1.8" />
@@ -41,6 +43,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ApiService" options="" />
       <module name="Auth" options="" />
       <module name="Auth_Api" options="" />
       <module name="Auth_Model" options="" />
