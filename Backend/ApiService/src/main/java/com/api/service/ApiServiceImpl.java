@@ -17,4 +17,20 @@ public class ApiServiceImpl implements ApiService {
         String apiKey = Base64.getUrlEncoder().withoutPadding().encodeToString(apiKeyBytes);
         return apiKey;
     }
+
+    @Override
+    public void send_api_request(String debitCardInfo, String companyName, String companyDesc, String fileLoc) {
+        //todo
+        //send message to kafka
+        //set record in apiRecord
+    }
+
+    @Override
+    public void update_api_key(String prcId, int record_id) {
+        //todo
+        //generate api key and aes encrypt it.
+        //insert api key into redis
+        //insert api key and prcId into api_key table
+        //update record in apiRecord
+    }
 }

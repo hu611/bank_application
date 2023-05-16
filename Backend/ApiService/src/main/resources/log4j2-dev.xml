@@ -1,0 +1,35 @@
+<Configuration monitorInterval="0" packages="">
+    <properties>
+        <property name="PATTERN">%date{YYYY-MM-dd HH:mm:ss,SSS} %level [%thread][%file:%line] - %msg%n%throwable</property>
+    </properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PATTERN}"/>
+        </Console>
+
+        <!--异步appender-->
+        <Async name="AsyncAppender" includeLocation="true">
+            <AppenderRef ref="Console"/>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <!--过滤掉spring和mybatis的一些无用的debug信息-->
+        <logger name="org.springframework" level="INFO">
+        </logger>
+        <logger name="org.mybatis" level="INFO">
+        </logger>
+
+        <!--OFF   0-->
+        <!--FATAL   100-->
+        <!--ERROR   200-->
+        <!--WARN   300-->
+        <!--INFO   400-->
+        <!--DEBUG   500-->
+        <!--TRACE   600-->
+        <!--ALL   Integer.MAX_VALUE-->
+        <Root level="DEBUG" includeLocation="true">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 public class UserGenerator {
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://localhost:3306/bank_application", "root", "youpassword")
+        FastAutoGenerator.create("jdbc:mysql://localhost:3306/bank_application_api", "root", "youpassword")
                 .globalConfig(builder -> {
                     builder.author("weiyanhu") // 设置作者
                             .enableSwagger()// 开启 swagger 模式

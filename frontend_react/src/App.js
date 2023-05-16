@@ -12,6 +12,8 @@ import BankCardsInfo from './Transaction/displaycardinfo'
 import Transfer from './Transaction/transfer'
 import CardInfoDetailsForm from './Transaction/cardInfoDetails'
 import DebitPlanInfo from './Transaction/debitPlan'
+import ApiRegistrationForm from './Api/APIRegistration'
+import ApiIndex from './Api/ApiIndex'
 function App () {
   return (
     <Router>
@@ -28,6 +30,8 @@ function App () {
           <Route path='/confirmDebit' element={<Confirm_Open_Account />}></Route>
           <Route path='/confirmCredit' element={<Confirm_Credit_Account />}></Route>
           <Route path='/debitPlan' element={<DebitPlanInfo />}></Route>
+          <Route path='/api' element={<ApiIndex />}></Route>
+          <Route path='/apiRegistration' element={<ApiRegistrationForm />}></Route>
         </Routes>
       </div>
     </Router>
