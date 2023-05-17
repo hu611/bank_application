@@ -22,11 +22,15 @@ public class DecryptUtils {
 
     public static String aes_encrypt(JsonNode jsonNode) throws Exception {
         String msg = jsonNode.toString();
+        return aes_encrypt_string(msg);
+    }
+
+    public static String aes_encrypt_string(String plainString) throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes("UTF-8"), "AES");
         IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes("UTF-8"));
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
-        byte[] encrypted = cipher.doFinal(msg.getBytes("UTF-8"));
+        byte[] encrypted = cipher.doFinal(plainString.getBytes("UTF-8"));
         return Base64.getEncoder().encodeToString(encrypted);
     }
 }

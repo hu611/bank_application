@@ -8,6 +8,9 @@ spring:
     url: jdbc:mysql://localhost:3306/bank_application_credit
     username: root
     password: youpassword
+  redis:
+    host: localhost
+    port: 6379
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848

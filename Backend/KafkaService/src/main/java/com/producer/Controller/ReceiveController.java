@@ -25,16 +25,13 @@ public class ReceiveController {
     @Autowired
     KafkaOffsetMapper kafkaOffsetMapper;
 
+    @Autowired
+    KafkaConsumer kafkaConsumer;
+
     @GetMapping("/receivemsg")
     @ResponseBody
     public List<Object> receiveMsg(@RequestParam("topic") String topic,
                                    @RequestParam("partition") int partition) {
-        Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "group-id");
-        KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<String, String>(properties);
 
 
         System.out.println("start to receive message");
@@ -44,6 +41,7 @@ public class ReceiveController {
         kafkaConsumer.assign(Collections.singletonList(topicPartition));
         // 获取当前分区的提交偏移量
         offset = kafkaConsumer.position(topicPartition);
+        System.out.println(offset);
         kafkaConsumer.seek(topicPartition,offset);
         ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofMillis(1000));
         stringList = new ArrayList<>();

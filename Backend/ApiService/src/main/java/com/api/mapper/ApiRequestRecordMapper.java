@@ -14,5 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ApiRequestRecordMapper extends BaseMapper<ApiRequestRecord> {
-
+    public void updateResultById(int recordId);
 }

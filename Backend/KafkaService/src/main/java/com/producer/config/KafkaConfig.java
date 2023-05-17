@@ -38,7 +38,7 @@ public class KafkaConfig {
         return kafkaProducer;
     }
 
-    /*
+
     @Bean
     public KafkaConsumer<String, String> kafkaConsumer() {
         Properties properties = new Properties();
@@ -50,6 +50,6 @@ public class KafkaConfig {
         return kafkaConsumer;
     }
 
-     */
+
 
 }

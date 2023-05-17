@@ -20,17 +20,17 @@ public class InitKafkaDatabase {
 
     @Test
     public void InitDatabase() {
-        String topic = Constants.creditService_topic;
-        int partition = Constants.creditService_partition;
+        String topic = Constants.apiService_topic;
+        int partition = Constants.apiService_partition;
         initKafkaService.InitDatabase(topic, partition);
     }
 
     @Test
     public void testKafkaMapper() {
         KafkaOffset kafkaOffset = new KafkaOffset();
-        kafkaOffset.setOffset(2L);
+        kafkaOffset.setOffset(0L);
         kafkaOffset.setPartitionId(0);
-        kafkaOffset.setTopic("CreditService");
+        kafkaOffset.setTopic("ApiService");
         kafkaOffsetMapper.updateByPartitionAndTopic(kafkaOffset);
     }
 

@@ -19,4 +19,9 @@ class ApiServiceApplicationTests {
         System.out.println(apiService.generateApiKey());
     }
 
+    @Test
+    void testKafkaFeign() {
+        apiService.send_api_request("prcId","a","b","c","d");
+    }
+
 }

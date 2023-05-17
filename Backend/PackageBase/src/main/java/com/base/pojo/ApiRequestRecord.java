@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
@@ -20,6 +21,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
+@AllArgsConstructor
 @TableName("api_request_record")
 @ApiModel(value = "ApiRequestRecord对象", description = "")
 public class ApiRequestRecord implements Serializable {

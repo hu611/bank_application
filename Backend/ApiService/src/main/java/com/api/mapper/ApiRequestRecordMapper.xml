@@ -17,4 +17,8 @@
         record_id, prc_id, company_name, company_desc, start_date, result
     </sql>
 
+    <update id="updateResultById" parameterType="Integer">
+        update api_request_record set result = "Success" where record_id = #{recordId}
+    </update>
+
 </mapper>

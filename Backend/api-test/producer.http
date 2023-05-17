@@ -3,14 +3,14 @@ POST {{producer}}/producer/sendmsg
 Content-Type: application/json
 
 {
-  "topic": "CreditService",
+  "topic": "ApiService",
   "key": "a",
   "partition": [0],
   "value": "4"
 }
 
 ###get test
-GET {{producer}}/producer/receivemsg?topic=CreditService&partition=0
+GET {{producer}}/producer/receivemsg?topic=ApiService&partition=0
 
 ###producer
 POST {{producer}}/producer/sendmsg
