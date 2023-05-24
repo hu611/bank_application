@@ -56,6 +56,11 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     TransactionRecordMapper transactionRecordMapper;
 
+    @Override
+    public void batch_insert_card_pinNum_redis(List<CardInfo> cardInfoList) {
+        //TODO insert all card card no pinNum to Redis server
+    }
+
     /**
      * 批量插入借记卡数据进入redis
      * e.g key:debit_balance_622203412900799 value:1000.000000
@@ -265,7 +270,8 @@ public class AccountServiceImpl implements AccountService {
         cardInfo.setPrcId(prcId);
         cardInfo.setCardType("0");
         cardInfoMapper.insert(cardInfo);
-        redisTemplate.opsForValue().set(UsefulUtils._get_redis_debit_balance_key(cardInfo.getCardNo()),cardInfo.getBalance());
+        redisTemplate.opsForValue().set(UsefulUtils._get_redis_debit_balance_key(cardInfo.getCardNo())
+                ,cardInfo.getBalance());
 
     }
 
@@ -313,27 +319,31 @@ public class AccountServiceImpl implements AccountService {
     /**
      * A function for transfer money from sender to recipient
      * @param aesString
-     * @param username
      * @throws Exception
      */
     @Transactional(propagation = Propagation.NESTED)
     @Override
-    public void transfer(String aesString, String username, String prcId) throws Exception {
+    public void transfer(String aesString, String prcId) throws Exception {
         JsonNode jsonNode = null;
         String senderBankAccount;
         String recipientBankAccount;
         String transferAmountString;
+        String senderPinNum;
         try {
             jsonNode = DecryptUtils.aes_decrypt(aesString);
             senderBankAccount = UsefulUtils.get_json_string_by_field(jsonNode,"senderBankAccount");
             recipientBankAccount = UsefulUtils.get_json_string_by_field(jsonNode,"recipientBankAccount");
             transferAmountString = UsefulUtils.get_json_string_by_field(jsonNode,"transferAmount");
+            senderPinNum = UsefulUtils.get_json_string_by_field(jsonNode,"senderPinNum");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error while parsing transaction");
         }
 
-
+        if(!check_pinNum_correct(senderBankAccount,senderPinNum)) {
+            //pin number is not correct, throw error
+            throw new RuntimeException("The Pin Number is not correct");
+        }
 
         BigDecimal transferAmount = new BigDecimal(transferAmountString);
 
@@ -406,6 +416,13 @@ public class AccountServiceImpl implements AccountService {
         emailThread.start();
 
 
+    }
+
+    public boolean check_pinNum_correct(String accountNum, String pinNum) {
+
+        //todo check if the pinNum is correct using redis
+
+        return false;
     }
 
     public static void acquire_key(RedisTemplate redisTemplate, String key) throws Exception{

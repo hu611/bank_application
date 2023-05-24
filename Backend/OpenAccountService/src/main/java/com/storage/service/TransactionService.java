@@ -8,4 +8,5 @@ public interface TransactionService {
     public void generate_code(String prcId) throws Exception;
 
     public void check_code(String username, String confirmCode) throws Exception;
+
 }

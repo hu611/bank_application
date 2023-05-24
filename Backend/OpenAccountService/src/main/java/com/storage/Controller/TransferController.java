@@ -5,6 +5,7 @@ import com.base.util.DecryptUtils;
 import com.base.util.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.storage.Dto.TransactionDto;
+import com.storage.service.AccountService;
 import com.storage.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,9 @@ public class TransferController {
 
     @Autowired
     TransactionService transactionService;
+
+    @Autowired
+    AccountService accountService;
 
     @PostMapping("/deposit")
     @ResponseBody
@@ -100,6 +104,5 @@ public class TransferController {
         return RestResponse.success();
 
     }
-
 
 }

@@ -167,7 +167,7 @@ public class AccountController implements InitializingBean {
     public RestResponse transfer(@RequestBody TransactionDto transactionDto) {
         String[]userInfo = get_token_user();
         try {
-            accountService.transfer(transactionDto.getTransaction(), userInfo[0],userInfo[1]);
+            accountService.transfer(transactionDto.getTransaction(), userInfo[1]);
         } catch (Exception e) {
             e.printStackTrace();
             return RestResponse.validfail(e.getMessage());

@@ -166,4 +166,5 @@ public class TransactionServiceImpl implements TransactionService {
         }
         redisTemplate.delete(_get_redis_confirm_code_key(username));
     }
+
 }

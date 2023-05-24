@@ -1,6 +1,7 @@
 package com.api.service;
 
 import com.api.Constant;
+import com.api.Dto.PayTerm;
 import com.api.Dto.ProduceMessageDto;
 import com.api.mapper.ApiKeyMapper;
 import com.api.mapper.ApiRequestRecordMapper;
@@ -8,8 +9,9 @@ import com.api.service.feign.KafkaFeign;
 import com.base.pojo.ApiKey;
 import com.base.pojo.ApiRequestRecord;
 import com.base.util.DecryptUtils;
+import com.base.util.JsonUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -49,9 +51,10 @@ public class ApiServiceImpl implements ApiService {
         //send message to kafka
         List<Integer> partitionList = new ArrayList<>();
         partitionList.add(0);
-        String value = debitCardInfo + " " + companyName + " " + companyDesc + " " + fileLoc;
+        String value = debitCardInfo + "," + companyName + "," + companyDesc + "," + fileLoc;
         ProduceMessageDto produceMessageDto = new ProduceMessageDto(Constant.apiService_topic, partitionList, "key",value);
         String result = kafkaFeign.sendMessage(produceMessageDto);
+        System.out.println("Sending " + produceMessageDto.toString() + " to " +Constant.apiService_topic + " is " + result);
         //set record in apiRecord
         Thread apiRecordThread = new Thread(new Runnable() {
             @Override
@@ -80,9 +83,25 @@ public class ApiServiceImpl implements ApiService {
         //insert api key into redis
         redisTemplate.opsForValue().set(prcId, encryptedApiKey);
         //insert api key and prcId into api_key table
-        ApiKey apiKey1 = new ApiKey(prcId,encryptedApiKey);
+        ApiKey apiKey1 = new ApiKey(prcId,encryptedApiKey, LocalDate.now());
         apiKeyMapper.insert(apiKey1);
         //update record in apiRecord
         apiRequestRecordMapper.updateResultById(record_id);
+    }
+
+    @Override
+    public void pay_with_api_key(String aesString) throws Exception {
+        JsonNode jsonNode = DecryptUtils.aes_decrypt(aesString);
+        String amount = JsonUtils.json_to_string(jsonNode, PayTerm.Amount);
+        String pinNum = JsonUtils.json_to_string(jsonNode, PayTerm.PinNum);
+        String accountNum = JsonUtils.json_to_string(jsonNode, PayTerm.AccountNum);
+        String apiKey = JsonUtils.json_to_string(jsonNode, PayTerm.ApiKey);
+        //type 0: debit card, type 1: credit card
+        int type = JsonUtils.json_to_int(jsonNode, PayTerm.Type);
+        if(type == 0) {
+
+        }
+
+
     }
 }

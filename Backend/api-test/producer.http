@@ -17,7 +17,7 @@ POST {{producer}}/producer/sendmsg
 Content-Type: application/json
 
 {
-  "topic": "test",
+  "topic": "ApiService",
   "partition": [0],
   "key": "",
   "value": "hello from http request"
