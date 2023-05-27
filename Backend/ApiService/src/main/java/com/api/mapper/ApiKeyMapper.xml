@@ -7,11 +7,12 @@
         <id column="api_key" property="apiKey" />
         <result column="prc_id" property="prcId" />
         <result column="last_update" property="lastUpdate" />
+        <result column="account_num" property="accountNum" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        prc_id, api_key, last_update
+        prc_id, api_key, last_update, account_num
     </sql>
 
     <select id="selectAllApiKey" resultMap="BaseResultMap">

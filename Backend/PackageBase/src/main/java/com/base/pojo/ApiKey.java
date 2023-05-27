@@ -32,4 +32,6 @@ public class ApiKey implements Serializable {
 
     private LocalDate lastUpdate;
 
+    private String accountNum;
+
 }

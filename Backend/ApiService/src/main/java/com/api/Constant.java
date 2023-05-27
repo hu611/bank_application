@@ -8,4 +8,8 @@ public class Constant {
     public static String getApiKeyRedis(String prcId) {
         return prcId + "_apiKey";
     }
+
+    public static String getAccountNumRedis(String apiKey) {
+        return apiKey + "_accountNumKey";
+    }
 }

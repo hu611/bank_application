@@ -3,8 +3,11 @@ package com.api.service;
 import com.api.Constant;
 import com.api.Dto.PayTerm;
 import com.api.Dto.ProduceMessageDto;
+import com.api.Dto.TransactionDto;
+import com.api.Dto.TransferDto;
 import com.api.mapper.ApiKeyMapper;
 import com.api.mapper.ApiRequestRecordMapper;
+import com.api.service.feign.DebitFeign;
 import com.api.service.feign.KafkaFeign;
 import com.base.pojo.ApiKey;
 import com.base.pojo.ApiRequestRecord;
@@ -28,6 +31,9 @@ public class ApiServiceImpl implements ApiService {
 
     @Autowired
     ApiRequestRecordMapper apiRequestRecordMapper;
+
+    @Autowired
+    DebitFeign debitFeign;
 
     @Autowired
     RedisTemplate redisTemplate;
@@ -69,7 +75,7 @@ public class ApiServiceImpl implements ApiService {
 
 
     @Override
-    public void update_api_key(String prcId, int record_id) {
+    public void update_api_key(String prcId, int record_id, String accountNum) {
         //todo
         //generate api key and aes encrypt it.
         String apiKey = generateApiKey();
@@ -83,7 +89,7 @@ public class ApiServiceImpl implements ApiService {
         //insert api key into redis
         redisTemplate.opsForValue().set(prcId, encryptedApiKey);
         //insert api key and prcId into api_key table
-        ApiKey apiKey1 = new ApiKey(prcId,encryptedApiKey, LocalDate.now());
+        ApiKey apiKey1 = new ApiKey(prcId,encryptedApiKey, LocalDate.now(), accountNum);
         apiKeyMapper.insert(apiKey1);
         //update record in apiRecord
         apiRequestRecordMapper.updateResultById(record_id);
@@ -92,16 +98,25 @@ public class ApiServiceImpl implements ApiService {
     @Override
     public void pay_with_api_key(String aesString) throws Exception {
         JsonNode jsonNode = DecryptUtils.aes_decrypt(aesString);
-        String amount = JsonUtils.json_to_string(jsonNode, PayTerm.Amount);
-        String pinNum = JsonUtils.json_to_string(jsonNode, PayTerm.PinNum);
-        String accountNum = JsonUtils.json_to_string(jsonNode, PayTerm.AccountNum);
-        String apiKey = JsonUtils.json_to_string(jsonNode, PayTerm.ApiKey);
+        String amount = JsonUtils.json_to_string(jsonNode, "amount");
+        String pinNum = JsonUtils.json_to_string(jsonNode, "pinNum");
+        String accountNum = JsonUtils.json_to_string(jsonNode, "accountNum");
+        String apiKey = JsonUtils.json_to_string(jsonNode, "apiKey");
         //type 0: debit card, type 1: credit card
-        int type = JsonUtils.json_to_int(jsonNode, PayTerm.Type);
-        if(type == 0) {
-
+        int type = JsonUtils.json_to_int(jsonNode, "type");
+        String receiverAccountNum = "";
+        try {
+            receiverAccountNum = redisTemplate.opsForValue().get(Constant.getAccountNumRedis(apiKey)).toString();
+        } catch (NullPointerException exception) {
+            throw new RuntimeException("Api Key does not exist");
         }
-
-
+        if(type == 0) {
+            //debit card
+            TransferDto transferDto = new TransferDto(accountNum, receiverAccountNum, amount, pinNum);
+            JsonNode jsonNode1 = JsonUtils._object_to_json(transferDto);
+            String sendString = DecryptUtils.aes_encrypt(jsonNode1);
+            TransactionDto transactionDto = new TransactionDto(sendString);
+            debitFeign.transfer(transactionDto);
+        }
     }
 }

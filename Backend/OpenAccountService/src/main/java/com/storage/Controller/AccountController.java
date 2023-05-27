@@ -44,8 +44,7 @@ public class AccountController implements InitializingBean {
     public void afterPropertiesSet() {
         //select all cards
         List<CardInfo> cardInfoList = cardInfoMapper.selectList(new LambdaQueryWrapper<>());
-        accountService.batch_insert_debit_balance_redis(cardInfoList);
-        accountService.batch_insert_user_cardno_redis(cardInfoList);
+        accountService.batch_insert(cardInfoList);
 
     }
 

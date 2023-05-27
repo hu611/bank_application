@@ -57,8 +57,28 @@ public class AccountServiceImpl implements AccountService {
     TransactionRecordMapper transactionRecordMapper;
 
     @Override
+    public void batch_insert(List<CardInfo> cardInfoList) {
+        batch_insert_debit_balance_redis(cardInfoList);
+        batch_insert_card_pinNum_redis(cardInfoList);
+        batch_insert_user_cardno_redis(cardInfoList);
+    }
+
     public void batch_insert_card_pinNum_redis(List<CardInfo> cardInfoList) {
-        //TODO insert all card card no pinNum to Redis server
+        System.out.println("batch insert card pin number started");
+        // 获取Redis连接
+        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+        RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
+
+        // 开启管道
+        connection.openPipeline();
+
+        for(CardInfo cardInfo: cardInfoList) {
+            String cardKey = UsefulUtils._get_redis_pinNum(cardInfo.getCardNo());
+            connection.set(serializer.serialize(cardKey), serializer.serialize(cardInfo.getPinNum()));
+        }
+
+        connection.closePipeline();
+        System.out.println("batch insert card pin number is successful");
     }
 
     /**
@@ -66,7 +86,6 @@ public class AccountServiceImpl implements AccountService {
      * e.g key:debit_balance_622203412900799 value:1000.000000
      * @param cardInfoList
      */
-    @Override
     public void batch_insert_debit_balance_redis(List<CardInfo> cardInfoList) {
         System.out.println("batch insert started");
         // 获取Redis连接
@@ -94,7 +113,6 @@ public class AccountServiceImpl implements AccountService {
      * eg: key: prcid_bankNo_320202020203 value:"622203412900799 622203518628839"
      * @param cardInfoList
      */
-    @Override
     public void batch_insert_user_cardno_redis(List<CardInfo> cardInfoList) {
         // 获取Redis连接
         RedisConnection connection = objectRedisTemplate.getConnectionFactory().getConnection();
@@ -420,9 +438,16 @@ public class AccountServiceImpl implements AccountService {
 
     public boolean check_pinNum_correct(String accountNum, String pinNum) {
 
-        //todo check if the pinNum is correct using redis
-
-        return false;
+        String key = UsefulUtils._get_redis_pinNum(accountNum);
+        try {
+            String realPinNum = redisTemplate.opsForValue().get(key).toString();
+            if(realPinNum.equals(pinNum)) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static void acquire_key(RedisTemplate redisTemplate, String key) throws Exception{

@@ -45,8 +45,7 @@ public class ApiServiceController implements InitializingBean {
      */
     @PostMapping("/pay")
     public RestResponse payWithApiKey(@RequestParam("request") String aesString) {
-
-
+        return null;
     }
 
     /**

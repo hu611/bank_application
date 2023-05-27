@@ -1,9 +1,14 @@
 package com.api.Dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
 public class PayTerm {
-    public final static String Amount = "Amount";
-    public final static String AccountNum = "AccountNum";
-    public final static String PinNum = "PinNum";
-    public final static String ApiKey = "ApiKey";
-    public final static String Type = "Type";
+    String Amount;
+    String AccountNum;
+    String PinNum;
+    String ApiKey;
+    int Type;
 }

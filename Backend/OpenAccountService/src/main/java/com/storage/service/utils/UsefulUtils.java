@@ -31,6 +31,10 @@ public class UsefulUtils {
         return "redis_shared_key_" + key;
     }
 
+    public static String _get_redis_pinNum(String accountNum) {
+        return "pin_num_" + accountNum;
+    }
+
     public static String _generate_random_num(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();

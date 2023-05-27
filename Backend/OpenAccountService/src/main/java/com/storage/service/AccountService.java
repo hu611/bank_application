@@ -20,9 +20,5 @@ public interface AccountService {
 
     CardInfo getDetailedBankAccountInfo(String bank_id, String[]userInfo) throws Exception;
 
-    public void batch_insert_debit_balance_redis(List<CardInfo> cardInfoList);
-
-    void batch_insert_user_cardno_redis(List<CardInfo> cardInfoList);
-
-    void batch_insert_card_pinNum_redis(List<CardInfo> cardInfoList);
+    public void batch_insert(List<CardInfo> cardInfoList);
 }

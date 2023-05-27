@@ -8,6 +8,7 @@ import Header from '../Utils/header'
 function Transfer () {
   const [fromAccount, setFromAccount] = useState('')
   const [toAccount, setToAccount] = useState('')
+  const [pinNum, setPinNum] = useState('')
   const [amount, setAmount] = useState('')
   const [status, setStatus] = useState('')
   const { search } = useLocation()
@@ -48,7 +49,8 @@ function Transfer () {
     const data = {
       senderBankAccount: fromAccount,
       recipientBankAccount: toAccount,
-      transferAmount: amount.toString()
+      transferAmount: amount.toString(),
+      senderPinNum: pinNum.toString()
     }
     const sent_data = {
       "transaction": aes_encrypt(data)
@@ -98,6 +100,15 @@ function Transfer () {
             id="amount"
             value={amount}
             onChange={(e) => setAmount(Number(e.target.value))}
+          />
+        </div>
+        <div>
+          <label htmlFor="amount">pin：</label>
+          <input
+            type="number"
+            id="amount"
+            value={pinNum}
+            onChange={(e) => setPinNum(Number(e.target.value))}
           />
         </div>
         <button type="button" onClick={transferAction}>
