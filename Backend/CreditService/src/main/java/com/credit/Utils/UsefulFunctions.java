@@ -14,4 +14,8 @@ public class UsefulFunctions {
         add_interest = add_interest.multiply(owe_amount);
         return add_interest;
     }
+
+    public static String get_Balance_Redis(String accountNum) {
+        return accountNum + "_CreditCard_Balance";
+    }
 }

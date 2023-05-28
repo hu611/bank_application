@@ -4,15 +4,23 @@ import com.base.RestResponse;
 import com.base.pojo.CreditCard;
 import com.credit.Service.CreditService;
 import com.credit.dto.CardInfoDto;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class CreditController {
+public class CreditController implements InitializingBean {
+
+
 
     @Autowired
     CreditService creditService;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        creditService.initializeRedis();
+    }
 
     @GetMapping("/getCreditScore")
     @ResponseBody

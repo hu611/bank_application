@@ -38,4 +38,8 @@
         update credit_card set late_fee = late_fee + #{param1} where card_no = #{param2}
     </update>
 
+    <select id="getAllCreditCards" resultMap="BaseResultMap">
+        select * from credit_card
+    </select>
+
 </mapper>

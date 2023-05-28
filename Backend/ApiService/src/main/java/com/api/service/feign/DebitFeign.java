@@ -6,10 +6,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-@FeignClient(name = "OpenAccountService")
-@RequestMapping("/storage/account")
+@FeignClient(name = "OpenAccountService", configuration = AuthConfiguration.class)
+@RequestMapping("/storage")
 public interface DebitFeign {
-    @PostMapping("/transfer")
+    @PostMapping("/account/transfer")
+    @ResponseBody
     public RestResponse transfer(@RequestBody TransactionDto transactionDto);
 }

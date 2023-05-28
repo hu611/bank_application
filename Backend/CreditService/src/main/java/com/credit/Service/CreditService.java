@@ -15,4 +15,6 @@ public interface CreditService {
 
     public CreditCard getCreditCardByPrcId(String prcId) throws Exception;
 
+    public void initializeRedis() throws Exception;
+
 }

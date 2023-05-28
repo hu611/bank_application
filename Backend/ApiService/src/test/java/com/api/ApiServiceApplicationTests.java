@@ -31,7 +31,7 @@ class ApiServiceApplicationTests {
 
     @Test
     void testTransfer() {
-        PayTerm payTerm = new PayTerm("200","123456789","1932","abc123",0);
+        PayTerm payTerm = new PayTerm("50","622203518628839","1932","abc123",0);
         JsonNode jsonNode = JsonUtils._object_to_json(payTerm);
         try {
             String aesString = DecryptUtils.aes_encrypt(jsonNode);

@@ -20,6 +20,8 @@ import java.util.List;
 public interface CreditCardMapper extends BaseMapper<CreditCard> {
     CreditCard getCreditCardByPrcId(String prcId);
 
+    List<CreditCard> getAllCreditCards();
+
     int updateInterest(BigDecimal interest, String prcId);
 
     List<CreditCard> selectAllUnpaidMinCreditCards();

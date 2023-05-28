@@ -7,6 +7,11 @@ import com.credit.mapper.*;
 import com.base.pojo.*;
 import com.credit.Service.CreditService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +29,33 @@ public class CreditServiceImpl implements CreditService {
 
     @Autowired
     CreditCardMapper creditCardMapper;
+
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    @Override
+    public void initializeRedis() throws Exception{
+        RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
+        redisConnection.openPipeline();
+        RedisSerializer<String> redisSerializer = new StringRedisSerializer();
+
+        initializeCreditBalanceRedis(redisSerializer, redisConnection);
+
+        redisConnection.closePipeline();
+    }
+
+    /**
+     * insert creditCardNum Balance to Redis
+     */
+    public void initializeCreditBalanceRedis(RedisSerializer redisSerializer, RedisConnection redisConnection) throws Exception {
+        List<CreditCard> creditCardList = creditCardMapper.getAllCreditCards();
+        for(CreditCard creditCard: creditCardList) {
+            String key = UsefulFunctions.get_Balance_Redis(creditCard.getCardNo());
+            redisConnection.set(redisSerializer.serialize(key), redisSerializer.serialize(creditCard.getBalance().toString()));
+            System.out.println("inserted " + key + " to Redis");
+        }
+    }
+
 
     @Override
     public CreditCard getCreditCardByPrcId(String prcId) throws Exception {
