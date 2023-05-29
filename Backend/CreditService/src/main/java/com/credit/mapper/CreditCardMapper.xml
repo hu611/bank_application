@@ -42,4 +42,8 @@
         select * from credit_card
     </select>
 
+    <update id="updateBalance">
+        update credit_card set balance = balance + #{param1} where card_no = #{param2}
+    </update>
+
 </mapper>

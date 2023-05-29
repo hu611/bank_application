@@ -24,6 +24,8 @@ public interface CreditCardMapper extends BaseMapper<CreditCard> {
 
     int updateInterest(BigDecimal interest, String prcId);
 
+    int updateBalance(BigDecimal addedAmount, String accountNum);
+
     List<CreditCard> selectAllUnpaidMinCreditCards();
 
     int updateLateFee(BigDecimal late_fee, String card_no);

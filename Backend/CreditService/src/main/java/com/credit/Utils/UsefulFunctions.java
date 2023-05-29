@@ -18,4 +18,8 @@ public class UsefulFunctions {
     public static String get_Balance_Redis(String accountNum) {
         return accountNum + "_CreditCard_Balance";
     }
+
+    public static String get_Shared_Key(String key) {
+        return key + "_key";
+    }
 }

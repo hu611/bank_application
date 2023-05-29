@@ -47,4 +47,10 @@ public class CreditController implements InitializingBean {
         return creditService.getCreditCardByPrcId(prc_id);
     }
 
+    @PostMapping("/creditPay")
+    @ResponseBody
+    public String creditPay(@RequestBody String aesString) throws Exception {
+        creditService.creditPay(aesString);
+    }
+
 }

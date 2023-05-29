@@ -17,4 +17,5 @@ public interface CreditService {
 
     public void initializeRedis() throws Exception;
 
+    boolean creditPay(String aesString);
 }

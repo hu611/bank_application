@@ -1,11 +1,15 @@
 package com.credit.Service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.base.util.DecryptUtils;
+import com.base.util.JsonUtils;
 import com.credit.Utils.Constants;
 import com.credit.Utils.UsefulFunctions;
 import com.credit.mapper.*;
 import com.base.pojo.*;
 import com.credit.Service.CreditService;
+import com.fasterxml.jackson.databind.JsonNode;
+import jdk.vm.ci.meta.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -15,7 +19,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -51,7 +57,7 @@ public class CreditServiceImpl implements CreditService {
         List<CreditCard> creditCardList = creditCardMapper.getAllCreditCards();
         for(CreditCard creditCard: creditCardList) {
             String key = UsefulFunctions.get_Balance_Redis(creditCard.getCardNo());
-            redisConnection.set(redisSerializer.serialize(key), redisSerializer.serialize(creditCard.getBalance().toString()));
+            redisConnection.set(redisSerializer.serialize(key), redisSerializer.serialize(creditCard.getBalance().toString()+","+creditCard.getQuota().toString()));
             System.out.println("inserted " + key + " to Redis");
         }
     }
@@ -180,6 +186,105 @@ public class CreditServiceImpl implements CreditService {
     public boolean hasCreditCard(String prcId) throws Exception {
         CreditCard creditCard = creditCardMapper.getCreditCardByPrcId(prcId);
         return creditCard != null;
+    }
+
+    @Override
+    public boolean creditPay(String aesString) {
+        JsonNode jsonNode;
+        try {
+            jsonNode = DecryptUtils.aes_decrypt(aesString);
+        } catch (Exception e) {
+            return false;
+        }
+        String amount = JsonUtils.json_to_string(jsonNode, "Amount");
+        BigDecimal amountBD = new BigDecimal(amount);
+        String cardNum = JsonUtils.json_to_string(jsonNode, "CardNum");
+        String key = UsefulFunctions.get_Balance_Redis(cardNum);
+        String shared_key = UsefulFunctions.get_Shared_Key(key);
+        if(!acquire_key(redisTemplate, shared_key)) {
+            return false;
+        }
+        String res = redisTemplate.opsForValue().get(key).toString();
+        String[] resList = res.split(",");
+        BigDecimal balance = new BigDecimal(resList[0]);
+        BigDecimal quota = new BigDecimal(resList[1]);
+        balance = balance.add(amountBD);
+
+        //当前小于限额
+        if(balance.compareTo(quota) != 1) {
+            redisTemplate.opsForValue().set(key, balance);
+        } else {
+            return false;
+        }
+
+        Object[] parameter = new Object[]{amountBD, cardNum};
+        //更新数据库的信用卡balance
+        FunctionThread sqlThread = new FunctionThread(creditCardMapper, "updateBalance", parameter);
+        sqlThread.start();
+
+
+        //添加账单信息
+        CreditCardBill creditCardBill = new CreditCardBill();
+        creditCardBill.setPaid(0);
+        creditCardBill.setBillName("Credit Card Payment");
+        creditCardBill.setOweAmount(amountBD);
+        creditCardBill.setPrcId("11");
+        creditCardBill.setOweDate(LocalDate.now());
+        Object[] parameter1 = new Object[]{creditCardBill};
+        FunctionThread recordThread = new FunctionThread(creditCardBillMapper, "insert", parameter1);
+        recordThread.start();
+        return true;
+    }
+
+    public static boolean acquire_key(RedisTemplate redisTemplate, String key) {
+        RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
+        boolean acquired = redisConnection.setNX(key.getBytes(StandardCharsets.UTF_8), new byte[0]);
+        int i = 0;
+        while(!acquired) {
+            i++;
+            acquired = redisConnection.setNX(key.getBytes(StandardCharsets.UTF_8), new byte[0]);
+            if(i > 10) {
+                //retry 10 times
+                return false;
+            }
+        }
+
+        redisConnection.pExpire(key.getBytes(),100);
+        return true;
+    }
+
+    class FunctionThread extends Thread {
+        Object mapper;
+        String method;
+        Object[] parameters; // Array of parameters
+
+        public FunctionThread(Object mapper, String method, Object[] parameters) {
+            this.method = method;
+            this.mapper = mapper;
+            this.parameters = parameters;
+        }
+
+        @Override
+        public void run() {
+            try {
+                // Get the Class object of the mapper
+                Class<?> mapperClass = mapper.getClass();
+
+                // Create an array of Class objects representing the parameter types
+                Class<?>[] parameterTypes = new Class<?>[parameters.length];
+                for (int i = 0; i < parameters.length; i++) {
+                    parameterTypes[i] = parameters[i].getClass();
+                }
+
+                // Get the Method object of the specified method name with parameter types
+                Method methodObj = mapperClass.getMethod(method, parameterTypes);
+
+                // Invoke the method on the mapper object with the specified parameters
+                methodObj.invoke(mapper, parameters);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 
