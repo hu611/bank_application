@@ -14,4 +14,8 @@ public interface DebitFeign {
     @PostMapping("/account/transfer")
     @ResponseBody
     public RestResponse transfer(@RequestBody TransactionDto transactionDto);
+
+    @PostMapping("/transaction/apiDepositMoney")
+    @ResponseBody
+    public boolean apiDepositMoney(@RequestBody String aesString);
 }

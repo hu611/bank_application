@@ -18,7 +18,7 @@ public class AuthConfiguration {
             return ((OAuth2AuthenticationDetails) detail).getTokenValue();
         }
          */
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYmFua19hcHBsaWNhdGlvbiJdLCJ1c2VyX25hbWUiOiJhZDI0IDMyMDIwMjAyMDIwMyIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2ODUyNDc0OTIsImF1dGhvcml0aWVzIjpbInAxIl0sImp0aSI6IjcyNzAzYmE3LWMwYTItNGYxYy05YmQ3LTZmZDA2MGM2Y2M3NCIsImNsaWVudF9pZCI6IlhjV2ViQXBwIn0.i1KI6FFxUvelllk7zzvYgdswHNiN6rwPxt0WfBx2CgU";
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYmFua19hcHBsaWNhdGlvbiJdLCJ1c2VyX25hbWUiOiJhZDI0IDMyMDIwMjAyMDIwMyIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2ODUzNTIzNDgsImF1dGhvcml0aWVzIjpbInAxIl0sImp0aSI6IjMxNGU5NzgyLThhM2YtNDNjMS05ZjRkLTU4MDRhMWJjYjJhNiIsImNsaWVudF9pZCI6IlhjV2ViQXBwIn0.kgClAMtyUJAcRgx8YeFeIeqgIkt30Vwyl6a2zk6acwc";
     }
     @Bean
     public RequestInterceptor requestInterceptor() {

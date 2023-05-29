@@ -9,14 +9,11 @@ import com.credit.mapper.*;
 import com.base.pojo.*;
 import com.credit.Service.CreditService;
 import com.fasterxml.jackson.databind.JsonNode;
-import jdk.vm.ci.meta.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
@@ -196,9 +193,9 @@ public class CreditServiceImpl implements CreditService {
         } catch (Exception e) {
             return false;
         }
-        String amount = JsonUtils.json_to_string(jsonNode, "Amount");
+        String amount = JsonUtils.json_to_string(jsonNode, "amount");
         BigDecimal amountBD = new BigDecimal(amount);
-        String cardNum = JsonUtils.json_to_string(jsonNode, "CardNum");
+        String cardNum = JsonUtils.json_to_string(jsonNode, "cardNum");
         String key = UsefulFunctions.get_Balance_Redis(cardNum);
         String shared_key = UsefulFunctions.get_Shared_Key(key);
         if(!acquire_key(redisTemplate, shared_key)) {
@@ -206,13 +203,14 @@ public class CreditServiceImpl implements CreditService {
         }
         String res = redisTemplate.opsForValue().get(key).toString();
         String[] resList = res.split(",");
+        System.out.println(res);
         BigDecimal balance = new BigDecimal(resList[0]);
         BigDecimal quota = new BigDecimal(resList[1]);
         balance = balance.add(amountBD);
 
         //当前小于限额
         if(balance.compareTo(quota) != 1) {
-            redisTemplate.opsForValue().set(key, balance);
+            redisTemplate.opsForValue().set(key, balance.toString()+","+quota);
         } else {
             return false;
         }
@@ -228,11 +226,10 @@ public class CreditServiceImpl implements CreditService {
         creditCardBill.setPaid(0);
         creditCardBill.setBillName("Credit Card Payment");
         creditCardBill.setOweAmount(amountBD);
+        creditCardBill.setBillTotal(amountBD);
         creditCardBill.setPrcId("11");
         creditCardBill.setOweDate(LocalDate.now());
-        Object[] parameter1 = new Object[]{creditCardBill};
-        FunctionThread recordThread = new FunctionThread(creditCardBillMapper, "insert", parameter1);
-        recordThread.start();
+        creditCardBillMapper.insert(creditCardBill);
         return true;
     }
 

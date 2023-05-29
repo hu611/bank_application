@@ -1,5 +1,6 @@
 package com.api;
 
+import com.api.Dto.CreditPayDto;
 import com.api.Dto.PayTerm;
 import com.api.service.ApiService;
 import com.base.util.DecryptUtils;
@@ -31,7 +32,7 @@ class ApiServiceApplicationTests {
 
     @Test
     void testTransfer() {
-        PayTerm payTerm = new PayTerm("50","622203518628839","1932","abc123",0);
+        PayTerm payTerm = new PayTerm("500","123456789","4567","abc123",1);
         JsonNode jsonNode = JsonUtils._object_to_json(payTerm);
         try {
             String aesString = DecryptUtils.aes_encrypt(jsonNode);
@@ -39,6 +40,14 @@ class ApiServiceApplicationTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void testCreditTransfer() throws Exception {
+        CreditPayDto creditPayDto = new CreditPayDto("100","32222222222222");
+        JsonNode jsonNode = JsonUtils._object_to_json(creditPayDto);
+        String aesString = DecryptUtils.aes_encrypt(jsonNode);
+        System.out.println(aesString);
     }
 
 }

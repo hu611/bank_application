@@ -49,8 +49,8 @@ public class CreditController implements InitializingBean {
 
     @PostMapping("/creditPay")
     @ResponseBody
-    public String creditPay(@RequestBody String aesString) throws Exception {
-        creditService.creditPay(aesString);
+    public boolean creditPay(@RequestBody String aesString) throws Exception {
+        return creditService.creditPay(aesString);
     }
 
 }

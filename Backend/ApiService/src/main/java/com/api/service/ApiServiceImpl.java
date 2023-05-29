@@ -1,12 +1,10 @@
 package com.api.service;
 
 import com.api.Constant;
-import com.api.Dto.PayTerm;
-import com.api.Dto.ProduceMessageDto;
-import com.api.Dto.TransactionDto;
-import com.api.Dto.TransferDto;
+import com.api.Dto.*;
 import com.api.mapper.ApiKeyMapper;
 import com.api.mapper.ApiRequestRecordMapper;
+import com.api.service.feign.CreditFeign;
 import com.api.service.feign.DebitFeign;
 import com.api.service.feign.KafkaFeign;
 import com.base.pojo.ApiKey;
@@ -31,6 +29,9 @@ public class ApiServiceImpl implements ApiService {
 
     @Autowired
     ApiRequestRecordMapper apiRequestRecordMapper;
+
+    @Autowired
+    CreditFeign creditFeign;
 
     @Autowired
     DebitFeign debitFeign;
@@ -117,6 +118,23 @@ public class ApiServiceImpl implements ApiService {
             String sendString = DecryptUtils.aes_encrypt(jsonNode1);
             TransactionDto transactionDto = new TransactionDto(sendString);
             debitFeign.transfer(transactionDto);
+        } else {
+            //credit card
+            CreditPayDto creditPayDto = new CreditPayDto(amount, accountNum);
+            String aesString1 = _transfer_creditPayDto_to_aesString(creditPayDto);
+            boolean res = creditFeign.creditPay(aesString1);
+            if(!res) {
+                return;
+            }
+            //debit card
+            CreditPayDto creditPayDto1 = new CreditPayDto(amount, receiverAccountNum);
+            aesString1 = _transfer_creditPayDto_to_aesString(creditPayDto1);
+            debitFeign.apiDepositMoney(aesString1);
         }
+    }
+
+    public static String _transfer_creditPayDto_to_aesString(CreditPayDto creditPayDto) throws Exception{
+        JsonNode jsonNode1 = JsonUtils._object_to_json(creditPayDto);
+        return DecryptUtils.aes_encrypt(jsonNode1);
     }
 }

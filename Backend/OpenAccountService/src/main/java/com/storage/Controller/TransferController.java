@@ -105,4 +105,22 @@ public class TransferController {
 
     }
 
+    @PostMapping("/apiDepositMoney")
+    @ResponseBody
+    public boolean apiDepositMoney(@RequestBody String aesString) {
+        String[]userInfo = get_token_user();
+        String username = userInfo[0];
+        String prcId = userInfo[1];
+        try {
+            JsonNode jsonNode = DecryptUtils.aes_decrypt(aesString);
+            String amount = JsonUtils.json_to_string(jsonNode, "amount");
+            String cardNum = JsonUtils.json_to_string(jsonNode, "cardNum");
+            BigDecimal amountBD = new BigDecimal(amount);
+            transactionService.deposit_money(amountBD, username, prcId, cardNum, aesString);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
 }

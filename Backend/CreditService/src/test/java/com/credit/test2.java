@@ -3,6 +3,7 @@ package com.credit;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.pojo.CreditCardBill;
 import com.base.pojo.DailyInterestAmountRecord;
+import com.credit.Service.CreditService;
 import com.credit.Service.CronSchedulerService;
 import com.credit.Service.feign.DebitFeign;
 import com.credit.mapper.CreditCardBillMapper;
@@ -30,6 +31,9 @@ public class test2 {
 
     @Autowired
     CronSchedulerService cronSchedulerService;
+
+    @Autowired
+    CreditService creditService;
 
     @Autowired
     DebitFeign debitFeign;
@@ -72,5 +76,11 @@ public class test2 {
     @Test
     public void test_debit_feign() {
         System.out.println(debitFeign.test1());
+    }
+
+    @Test
+    public void test_transfer() {
+        boolean res = creditService.creditPay("3nF5qT0IHOV2zSUstxZM5VRyq+GzdeN6gmXpMndtM3xwShguYjxS7TviKPX48wOqAtHCs0yxUw0gKHokPomnlQ==");
+        System.out.println(res);
     }
 }
