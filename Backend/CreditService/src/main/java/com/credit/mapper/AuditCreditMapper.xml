@@ -8,11 +8,12 @@
         <result column="prc_id" property="prcId" />
         <result column="pic_folder_loc" property="picFolderLoc" />
         <result column="pin_num" property="pinNum"/>
+        <result column="request_date" property="requestDate"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        audit_credit_id, prc_id, pic_folder_loc, pin_num
+        audit_credit_id, prc_id, pic_folder_loc, pin_num, request_date
     </sql>
 
 </mapper>

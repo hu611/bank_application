@@ -14,6 +14,8 @@ import CardInfoDetailsForm from './Transaction/cardInfoDetails'
 import DebitPlanInfo from './Transaction/debitPlan'
 import ApiRegistrationForm from './Api/APIRegistration'
 import ApiIndex from './Api/ApiIndex'
+import CreditCardAudit from './Audit/CreditCardAudit'
+import CreditCardDetailedInfo from './Audit/CreditCardDetailedInfo'
 function App () {
   return (
     <Router>
@@ -32,6 +34,8 @@ function App () {
           <Route path='/debitPlan' element={<DebitPlanInfo />}></Route>
           <Route path='/api' element={<ApiIndex />}></Route>
           <Route path='/apiRegistration' element={<ApiRegistrationForm />}></Route>
+          <Route path='/auditCredit' element={<CreditCardAudit />}></Route>
+          <Route path='/creditAudit' element={<CreditCardDetailedInfo />}></Route>
         </Routes>
       </div>
     </Router>

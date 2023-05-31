@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: Audit System
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bank_application_credit
+    username: root
+    password: youpassword
+  redis:
+    host: localhost
+    port: 6379
+server:
+  port: 63060
+  servlet:
+    context-path: /audit

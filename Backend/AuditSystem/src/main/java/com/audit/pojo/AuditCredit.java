@@ -1,0 +1,39 @@
+package com.audit.pojo;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
+import lombok.ToString;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author weiyanhu
+ * @since 2023-04-25
+ */
+@Data
+@ToString
+@TableName("audit_credit")
+@ApiModel(value = "AuditCredit对象", description = "")
+public class AuditCredit implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "audit_credit_id", type = IdType.AUTO)
+    private Integer auditCreditId;
+
+    private String prcId;
+
+    private String picFolderLoc;
+
+    private String pinNum;
+
+    private LocalDate requestDate;
+}

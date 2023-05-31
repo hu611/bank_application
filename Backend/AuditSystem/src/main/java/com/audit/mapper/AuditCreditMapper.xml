@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.audit.mapper.AuditCreditMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.audit.pojo.AuditCredit">
+        <id column="audit_credit_id" property="auditCreditId" />
+        <result column="prc_id" property="prcId" />
+        <result column="pic_folder_loc" property="picFolderLoc" />
+        <result column="pin_num" property="pinNum"/>
+        <result column="request_date" property="requestDate"/>
+    </resultMap>
+
+    <resultMap id="CreditAuditResponse" type="com.audit.dto.CreditAuditResponse">
+        <result column="prc_id" property="prcId" />
+        <result column="request_date" property="applicationTime"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        audit_credit_id, prc_id, pic_folder_loc, pin_num, request_date
+    </sql>
+
+    <select id="getAllAuditCredits" resultMap="CreditAuditResponse">
+        select * from audit_credit
+    </select>
+
+</mapper>

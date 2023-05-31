@@ -11,6 +11,7 @@
         </processorPath>
         <module name="KafkaService" />
         <module name="ApiService" />
+        <module name="AuditSystem" />
         <module name="Auth_Model" />
         <module name="PackageBase" />
         <module name="CreditService" />
@@ -23,6 +24,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ApiService" target="1.8" />
+      <module name="AuditSystem" target="1.8" />
       <module name="Auth" target="1.8" />
       <module name="Auth (1)" target="1.8" />
       <module name="Auth_Api" target="1.8" />
@@ -44,6 +46,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ApiService" options="" />
+      <module name="AuditSystem" options="" />
       <module name="Auth" options="" />
       <module name="Auth_Api" options="" />
       <module name="Auth_Model" options="" />
