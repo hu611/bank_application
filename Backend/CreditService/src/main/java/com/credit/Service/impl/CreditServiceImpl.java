@@ -8,6 +8,7 @@ import com.credit.Utils.UsefulFunctions;
 import com.credit.mapper.*;
 import com.base.pojo.*;
 import com.credit.Service.CreditService;
+import com.credit.pojo.AuditCredit;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -15,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -32,6 +35,9 @@ public class CreditServiceImpl implements CreditService {
 
     @Autowired
     CreditCardMapper creditCardMapper;
+
+    @Autowired
+    AuditCreditMapper auditCreditMapper;
 
     @Autowired
     RedisTemplate redisTemplate;
@@ -284,20 +290,71 @@ public class CreditServiceImpl implements CreditService {
         }
     }
 
+    @Transactional
     @Override
     public void registerCreditCard(String aesString) {
         try {
             JsonNode jsonNode = DecryptUtils.aes_decrypt(aesString);
             int creditScore = JsonUtils.json_to_int(jsonNode, "creditScore");
+            String prcId = JsonUtils.json_to_string(jsonNode, "prcId");
             //get pin number from audit database
+            List<AuditCredit> auditCreditList = auditCreditMapper.selectByPrcId(prcId);
+            String pinNum = auditCreditList.get(0).getPinNum();
             //remove record from audit database
+            for(AuditCredit auditCredit: auditCreditList) {
+                auditCreditMapper.deleteById(auditCredit.getAuditCreditId());
+            }
             //generate credit card
-            //assign quota and interest rate based on credit score
             CreditCard creditCard = new CreditCard();
+            creditCard.setCardNo(generateAccountNum(prcId));
+            creditCard.setLastBillDate(LocalDate.now());
+            creditCard.setPrcId(prcId);
+            creditCard.setPinNum(pinNum);
+            creditCard.setOpeningDate(LocalDate.now());
+            //assign quota and interest rate based on credit score
+            //300 -850
+            if(creditScore < 500) {
+                creditCard.setQuota(new BigDecimal("5000"));
+            } else {
+                creditCard.setQuota(new BigDecimal("30000"));
+            }
+            creditCardMapper.insert(creditCard);
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String generateAccountNum(String prcId) {
+        String res = Constants.Credit_Card_NUMBER_PREFIX + prcId.substring(prcId.length()-3);
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < 9; i++) {
+            stringBuilder.append(random.nextInt(10));
+        }
+        res = res + stringBuilder.toString();
+        res = res + calculate_final_bank_account_no_digit(res);
+        return res;
+
+    }
+
+    public char calculate_final_bank_account_no_digit(String currbankAccount) {
+        int first_step_calc = 0;
+        int index = 0;
+        int second_step_calc = 0;
+        for(int i = currbankAccount.length()-1; i >= 0; i--) {
+            int curr_digit = currbankAccount.charAt(i)-'0';
+            if(index % 2 == 0) {
+                int tmp = curr_digit * 2;
+                first_step_calc += tmp/10 + tmp%10;
+            } else {
+                second_step_calc += curr_digit;
+            }
+            index++;
+        }
+        int res = 10 - ((first_step_calc+second_step_calc) % 10);
+        return (char) res;
     }
 }
 

@@ -7,4 +7,6 @@ public class Constants {
     public static boolean daily_interest_calculating = false;
 
     public static boolean month_checkout_generating = false;
+
+
 }

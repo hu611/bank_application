@@ -6,4 +6,6 @@ public class Constants {
     public final static float FICO_INITIAL_CREDIT_SCORE = 300;
     public final static float INITIAL_CREDIT_LIMIT = 10000;
     public final static BigDecimal INTEREST_RATE = new BigDecimal(0.0005);
+
+    public static String Credit_Card_NUMBER_PREFIX = "623";
 }

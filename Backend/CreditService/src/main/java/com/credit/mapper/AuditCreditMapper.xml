@@ -16,4 +16,8 @@
         audit_credit_id, prc_id, pic_folder_loc, pin_num, request_date
     </sql>
 
+    <select id="selectByPrcId" resultMap="BaseResultMap">
+        select * from audit_credit where prc_id = #{prcId}
+    </select>
+
 </mapper>

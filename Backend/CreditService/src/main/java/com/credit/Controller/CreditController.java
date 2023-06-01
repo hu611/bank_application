@@ -4,6 +4,7 @@ import com.base.RestResponse;
 import com.base.pojo.CreditCard;
 import com.credit.Service.CreditService;
 import com.credit.dto.CardInfoDto;
+import com.credit.dto.TransactionDto;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,8 +56,8 @@ public class CreditController implements InitializingBean {
 
     @PostMapping("/registerCreditCard")
     @ResponseBody
-    public void registerCreditCard(@RequestParam("info") String aesString) {
-        creditService.registerCreditCard(aesString);
+    public void registerCreditCard(@RequestBody TransactionDto transactionDto) {
+        creditService.registerCreditCard(transactionDto.getTransaction());
     }
 
 }

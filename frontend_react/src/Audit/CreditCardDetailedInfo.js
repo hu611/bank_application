@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
 import { useLocation } from 'react-router-dom'
+import { aes_encrypt } from "../encrypt"
 import axios from "axios"
-import { audit_url } from "../constants"
+import { audit_url, credit_url } from "../constants"
 import './style.scss'
 
 function CreditCardDetailedInfo () {
   const [prcId, setPrcId] = useState('')
-  const [pinNum, setPinNum] = useState('')
   const [imageUrls, setImageUrls] = useState('')
   const { search } = useLocation()
   const [creditScore, setCreditScore] = useState('')
@@ -16,6 +16,22 @@ function CreditCardDetailedInfo () {
     setPrcId(queryParams.get('prcId'))
     fetchCreditCardData(queryParams.get('prcId'))
   }, [])
+
+  const agreeCreditCardRequest = async () => {
+    const data = {
+      prcId: prcId,
+      creditScore: creditScore
+    }
+    const sent_data = aes_encrypt(data)
+    const transaction = {
+      transaction: sent_data
+    }
+    try {
+      const response = await axios.post(credit_url + "/credit/registerCreditCard", transaction)
+    } catch (error) {
+      alert("gg")
+    }
+  }
 
   const fetchCreditCardData = async (prcId) => {
     let json = []
@@ -54,7 +70,7 @@ function CreditCardDetailedInfo () {
         />
       </div>
       <div>
-        <button>同意</button>
+        <button onClick={agreeCreditCardRequest}>同意</button>
         <button>拒绝</button>
       </div>
     </div>
