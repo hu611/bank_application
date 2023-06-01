@@ -1,0 +1,4 @@
+###get file name under a folder
+GET http://localhost:63060/audit/getImageUrls/CreditAudit/320202020203
+###
+GET http://localhost:63060/getImageUrls/CreditAudit/320202020203

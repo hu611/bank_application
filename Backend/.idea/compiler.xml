@@ -26,12 +26,9 @@
       <module name="ApiService" target="1.8" />
       <module name="AuditSystem" target="1.8" />
       <module name="Auth" target="1.8" />
-      <module name="Auth (1)" target="1.8" />
       <module name="Auth_Api" target="1.8" />
       <module name="Auth_Model" target="1.8" />
-      <module name="Bank_Pojo" target="1.5" />
       <module name="CreditService" target="1.8" />
-      <module name="empty_module" target="1.8" />
       <module name="GatewayService" target="1.8" />
       <module name="KafkaService" target="1.8" />
       <module name="MyBatisGenerator" target="1.8" />
@@ -40,7 +37,6 @@
       <module name="package_parent" target="1.8" />
       <module name="PackageBase" target="1.8" />
       <module name="PackageParent" target="1.8" />
-      <module name="test_module" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -57,8 +53,6 @@
       <module name="OpenAccountService" options="" />
       <module name="PackageBase" options="" />
       <module name="PackageParent" options="" />
-      <module name="empty_module" options="" />
-      <module name="test_module" options="" />
     </option>
   </component>
 </project>

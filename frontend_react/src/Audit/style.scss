@@ -1,0 +1,5 @@
+.button-container {
+  display: flex;
+  justify-content: space-between; /* 控制按钮之间的间距 */
+  gap: 5px; /* 设置合适的距离值 */
+}

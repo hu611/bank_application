@@ -3,6 +3,8 @@ package com.base.util;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileUtils {
     public static boolean create_folder(String folder_loc) {
@@ -44,5 +46,18 @@ public class FileUtils {
             System.out.println("Save Image successful" + location + multipartFile.getOriginalFilename());
             i++;
         }
+    }
+
+    public static List<String> imageNameUnderFolder(String folderName) {
+        File folder = new File(folderName);
+        List<String> ret= new ArrayList<>();
+        if(folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            for(File file: files) {
+                ret.add(file.getName());
+            }
+        }
+        return ret;
+
     }
 }

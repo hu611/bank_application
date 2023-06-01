@@ -283,6 +283,22 @@ public class CreditServiceImpl implements CreditService {
             }
         }
     }
+
+    @Override
+    public void registerCreditCard(String aesString) {
+        try {
+            JsonNode jsonNode = DecryptUtils.aes_decrypt(aesString);
+            int creditScore = JsonUtils.json_to_int(jsonNode, "creditScore");
+            //get pin number from audit database
+            //remove record from audit database
+            //generate credit card
+            //assign quota and interest rate based on credit score
+            CreditCard creditCard = new CreditCard();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

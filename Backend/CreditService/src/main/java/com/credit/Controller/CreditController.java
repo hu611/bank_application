@@ -53,4 +53,10 @@ public class CreditController implements InitializingBean {
         return creditService.creditPay(aesString);
     }
 
+    @PostMapping("/registerCreditCard")
+    @ResponseBody
+    public void registerCreditCard(@RequestParam("info") String aesString) {
+        creditService.registerCreditCard(aesString);
+    }
+
 }

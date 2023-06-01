@@ -1,27 +1,39 @@
 import { useState, useEffect } from "react"
 import { useLocation } from 'react-router-dom'
-import '../axios_interceptor'
-import { aes_encrypt } from "../encrypt"
 import axios from "axios"
-import { storage_url } from "../constants"
+import { audit_url } from "../constants"
+import './style.scss'
 
 function CreditCardDetailedInfo () {
   const [prcId, setPrcId] = useState('')
   const [pinNum, setPinNum] = useState('')
   const [imageUrls, setImageUrls] = useState('')
   const { search } = useLocation()
+  const [creditScore, setCreditScore] = useState('')
   const queryParams = new URLSearchParams(search)
   useEffect(() => {
 
     setPrcId(queryParams.get('prcId'))
-    fetchCreditCardData()
+    fetchCreditCardData(queryParams.get('prcId'))
   }, [])
 
-  const fetchCreditCardData = async () => {
+  const fetchCreditCardData = async (prcId) => {
     let json = []
-    json.push("https://pentagram-production.imgix.net/02b1692f-0938-4f33-8935-89aebccc7c61/LOL_Logo_Rendered_Hi-Res_onblue-4x3.jpg?crop=edges&fit=crop&h=630&rect=0%2C264%2C3754%2C2342&w=1200")
+    try {
+      console.log(prcId)
+      const response = await axios.get(audit_url + "/audit/getImageUrls/CreditAudit/" + prcId)
+      console.log(response)
+      const res = response.data
+      const prefix = audit_url + "/audit/image/" + prcId + "/"
+      for (let i = 0; i < res.length; i++) {
+        json.push(prefix + res[i])
+      }
+    } catch (error) {
+      alert("gg")
+    }
+
     setImageUrls(json)
-    console.log(imageUrls)
+    console.log("imageUrls are " + json)
   }
 
 
@@ -33,6 +45,18 @@ function CreditCardDetailedInfo () {
           <img key={index} src={imageUrl} alt={`Image ${index}`} />
         ))}
       </tbody>
+      <div>
+        <input
+          type="number"
+          id="amount"
+          value={creditScore}
+          onChange={(e) => setCreditScore(Number(e.target.value))}
+        />
+      </div>
+      <div>
+        <button>同意</button>
+        <button>拒绝</button>
+      </div>
     </div>
   )
 }
